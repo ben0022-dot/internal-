@@ -1,0 +1,737 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ben & Sharon | Eco-Track</title>
+    <!-- Tailwind CSS & Google Fonts -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;800&display=swap" rel="stylesheet">
+
+    <style>
+        body { font-family: 'Poppins', sans-serif; overflow-x: hidden; }
+        
+        /* Glassmorphism Utility */
+        .glass {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 20px;
+        }
+
+        /* Floating Animation */
+        @keyframes float {
+            0% { transform: translateY(0px); }
+            50% { transform: translateY(-15px); }
+            100% { transform: translateY(0px); }
+        }
+        .floating { animation: float 5s ease-in-out infinite; }
+
+        /* Background Image Switcher */
+        #bg-slideshow {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            z-index: -2;
+            background-size: cover;
+            background-position: center;
+            transition: background-image 1.5s ease-in-out;
+        }
+
+        /* The Gate Overlay */
+        #gate-overlay {
+            position: fixed;
+            inset: 0;
+            z-index: 100;
+            background: url('https://images.unsplash.com/photo-1441974231531-c6227db76b6e?ixlib=rb-1.2.1&auto=format&fit=crop&w=1920&q=80');
+            background-size: cover;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .logo-box {
+            background: #065f46;
+            padding: 10px 20px;
+            border-radius: 50px;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            color: white;
+            font-weight: 800;
+        }
+
+        /* ============================================
+           CRITICAL FIXES FOR BUTTON RESPONSIVENESS
+           ============================================ */
+        
+        /* Ensure all buttons are clickable */
+        button, a, input[type="submit"] {
+            cursor: pointer !important;
+            -webkit-tap-highlight-color: transparent;
+            touch-action: manipulation;
+        }
+
+        /* Button press feedback */
+        .btn-responsive {
+            transition: all 0.2s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn-responsive:active {
+            transform: scale(0.95);
+        }
+
+        .btn-responsive::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+            transition: width 0.3s, height 0.3s;
+        }
+
+        .btn-responsive:active::after {
+            width: 200%;
+            height: 200%;
+        }
+
+        /* Input focus states */
+        input:focus, textarea:focus {
+            outline: 2px solid rgba(52, 211, 153, 0.5);
+            outline-offset: 2px;
+        }
+
+        /* Link hover states */
+        a {
+            transition: color 0.3s ease;
+        }
+
+        /* Prevent text selection on buttons */
+        .no-select {
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
+        }
+
+        /* Mobile menu improvements */
+        @media (max-width: 768px) {
+            .mobile-nav {
+                position: absolute;
+                top: 100%;
+                left: 0;
+                right: 0;
+                background: rgba(0, 0, 0, 0.9);
+                backdrop-filter: blur(10px);
+                padding: 1rem;
+                border-radius: 0 0 20px 20px;
+            }
+        }
+
+        /* Loading state */
+        .btn-loading {
+            opacity: 0.7;
+            pointer-events: none;
+        }
+
+        .btn-loading::before {
+            content: '';
+            display: inline-block;
+            width: 16px;
+            height: 16px;
+            border: 2px solid rgba(255,255,255,0.3);
+            border-top-color: white;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+            margin-right: 8px;
+            vertical-align: middle;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body class="text-white">
+
+    <div id="bg-slideshow"></div>
+    <div class="fixed inset-0 bg-black/40 -z-10"></div>
+
+    <!-- START: LOGIN GATE -->
+    <div id="gate-overlay">
+        <div class="glass p-10 w-full max-w-md text-center floating mx-4 relative">
+            <div class="logo-box mb-6 no-select">
+                <i class="fas fa-leaf"></i> <span>B & S</span>
+            </div>
+            <h2 class="text-3xl font-bold mb-6">Join the Movement</h2>
+            
+            <!-- FIXED FORM: Added proper form tag with preventDefault -->
+            <form id="auth-form" class="space-y-4" onsubmit="return false;">
+                <input 
+                    type="text" 
+                    id="username" 
+                    placeholder="Username" 
+                    class="w-full p-3 rounded-lg bg-white/20 border border-white/30 text-white placeholder-white/70 outline-none focus:border-green-400 transition-colors"
+                    autocomplete="off"
+                >
+                <input 
+                    type="email" 
+                    id="email" 
+                    placeholder="Email Address" 
+                    class="w-full p-3 rounded-lg bg-white/20 border border-white/30 text-white placeholder-white/70 outline-none focus:border-green-400 transition-colors"
+                    autocomplete="off"
+                >
+                
+                <!-- FIXED BUTTON: Added proper classes and onclick -->
+                <button 
+                    type="button"
+                    id="enterBtn"
+                    class="btn-responsive w-full bg-green-600 hover:bg-green-500 p-3 rounded-lg font-bold transition no-select shadow-lg hover:shadow-green-500/50"
+                >
+                    Get Started
+                </button>
+                
+                <!-- Alternative: Submit type button (commented out option) -->
+                <!-- <button type="submit" class="btn-responsive w-full bg-green-600 hover:bg-green-500 p-3 rounded-lg font-bold transition no-select">Get Started</button> -->
+            </form>
+            
+            <!-- Debug message area -->
+            <div id="gate-message" class="mt-4 text-sm text-red-400 hidden"></div>
+        </div>
+    </div>
+
+    <!-- START: MAIN WEBSITE (Initially Hidden) -->
+    <div id="main-content" class="hidden">
+        
+        <!-- Navigation -->
+        <nav class="glass sticky top-4 mx-4 my-4 z-50 px-6 py-4 flex justify-between items-center relative">
+            <div class="text-xl font-bold flex items-center gap-2 no-select cursor-pointer" onclick="window.scrollTo(0,0)">
+                <div class="bg-emerald-800 p-2 rounded-full">B&S</div>
+                <span>EcoTrack</span>
+            </div>
+            
+            <!-- Desktop Nav -->
+            <div class="hidden md:flex gap-8 font-semibold">
+                <a href="#home" class="hover:text-green-400 transition-colors py-2 px-3 rounded-lg hover:bg-white/5">Home</a>
+                <a href="#about" class="hover:text-green-400 transition-colors py-2 px-3 rounded-lg hover:bg-white/5">About Us</a>
+                <a href="#services" class="hover:text-green-400 transition-colors py-2 px-3 rounded-lg hover:bg-white/5">Services</a>
+                <a href="#contact" class="hover:text-green-400 transition-colors py-2 px-3 rounded-lg hover:bg-white/5">Contact Us</a>
+            </div>
+            
+            <!-- Mobile Menu Button -->
+            <button 
+                id="mobile-menu-btn"
+                type="button"
+                class="md:hidden text-white p-2 hover:bg-white/10 rounded-lg transition-colors btn-responsive"
+                aria-label="Toggle menu"
+            >
+                <i class="fas fa-bars text-xl"></i>
+            </button>
+            
+            <div id="user-greeting" class="hidden md:block text-green-400 font-bold ml-4"></div>
+        </nav>
+        
+        <!-- Mobile Menu Dropdown -->
+        <div id="mobile-menu" class="hidden md:hidden fixed top-20 left-4 right-4 z-40 glass mobile-nav">
+            <div class="flex flex-col gap-2">
+                <a href="#home" class="py-3 px-4 hover:bg-white/10 rounded-lg transition-colors">Home</a>
+                <a href="#about" class="py-3 px-4 hover:bg-white/10 rounded-lg transition-colors">About Us</a>
+                <a href="#services" class="py-3 px-4 hover:bg-white/10 rounded-lg transition-colors">Services</a>
+                <a href="#contact" class="py-3 px-4 hover:bg-white/10 rounded-lg transition-colors">Contact Us</a>
+            </div>
+        </div>
+
+        <!-- Home Section: Impact Visualization -->
+        <section id="home" class="min-h-screen px-6 py-20 flex flex-col items-center">
+            <h1 class="text-5xl font-extrabold mb-4 text-center">Community Impact</h1>
+            <p class="text-xl mb-12 text-center opacity-90">How our collective actions translate to data.</p>
+            
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-10 w-full max-w-6xl">
+                <div class="glass p-8">
+                    <canvas id="impactChart"></canvas>
+                </div>
+                <div class="grid grid-cols-2 gap-4" id="realtime-cards">
+                    <!-- Cards will be injected here via Supabase -->
+                </div>
+            </div>
+        </section>
+
+        <!-- Services & Challenges -->
+        <section id="services" class="py-20 px-6 bg-black/20">
+            <div class="max-w-6xl mx-auto">
+                <h2 class="text-4xl font-bold mb-10 text-center">Environmental Conservation Services</h2>
+                
+                <div class="grid md:grid-cols-2 gap-12">
+                    <div class="glass p-8">
+                        <h3 class="text-2xl font-bold mb-4 text-green-400">What We Offer</h3>
+                        <ol class="list-decimal list-inside space-y-4 text-lg">
+                            <li class="hover:text-green-400 transition-colors cursor-default">Reforestation & Tree Planting Programs</li>
+                            <li class="hover:text-green-400 transition-colors cursor-default">Urban Waste Management Training</li>
+                            <li class="hover:text-green-400 transition-colors cursor-default">River Cleaning & Restoration</li>
+                            <li class="hover:text-green-400 transition-colors cursor-default">Corporate Sustainability Auditing</li>
+                            <li class="hover:text-green-400 transition-colors cursor-default">Community Solar Grid Installation</li>
+                        </ol>
+                    </div>
+
+                    <div class="glass p-8 floating">
+                        <h3 class="text-2xl font-bold mb-4 text-orange-400">Current Challenges</h3>
+                        <ul id="challenges-list" class="space-y-4">
+                            <li class="flex items-start gap-2 hover:translate-x-2 transition-transform cursor-default">
+                                <i class="fas fa-exclamation-triangle mt-1 text-orange-400"></i>
+                                <span>Plastic pollution in Karura - <b class="text-green-400">Solution:</b> Weekly community sweeps.</span>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Calendar Section -->
+        <section class="py-20 px-6 flex flex-col items-center">
+            <h2 class="text-4xl font-bold mb-10">Events Calendar</h2>
+            <div class="glass p-4 w-full max-w-4xl h-[500px] overflow-hidden rounded-2xl">
+                <iframe src="https://calendar.google.com/calendar/embed?src=en.ke%23holiday%40group.v.calendar.google.com&ctz=Africa%2FNairobi" style="border: 0" width="100%" height="100%" frameborder="0" scrolling="no"></iframe>
+            </div>
+        </section>
+
+        <!-- Contact Section -->
+        <section id="contact" class="py-20 px-6">
+            <div class="max-w-6xl mx-auto glass p-10 grid md:grid-cols-2 gap-10">
+                <div>
+                    <h2 class="text-4xl font-bold mb-6">Contact Us</h2>
+                    <p class="mb-4 hover:text-green-400 transition-colors cursor-pointer" onclick="copyToClipboard('hello@benandsharon.co.ke')">
+                        <i class="fas fa-envelope mr-2"></i> hello@benandsharon.co.ke
+                    </p>
+                    <p class="mb-4 hover:text-green-400 transition-colors cursor-pointer" onclick="copyToClipboard('+254793805279')">
+                        <i class="fas fa-phone mr-2"></i> +254 793805279
+                    </p>
+                    <div class="flex gap-4 mt-6 text-2xl">
+                        <a href="#" class="fab fa-facebook hover:text-green-400 hover:scale-110 transition-all btn-responsive" aria-label="Facebook"></a>
+                        <a href="#" class="fab fa-instagram hover:text-green-400 hover:scale-110 transition-all btn-responsive" aria-label="Instagram"></a>
+                        <a href="#" class="fab fa-twitter hover:text-green-400 hover:scale-110 transition-all btn-responsive" aria-label="Twitter"></a>
+                    </div>
+                </div>
+                <div class="space-y-4">
+                    <input 
+                        type="text" 
+                        id="contact-subject"
+                        placeholder="Your Subject" 
+                        class="w-full p-3 rounded bg-white/10 border border-white/20 focus:border-green-400 outline-none transition-colors"
+                    >
+                    <textarea 
+                        id="contact-msg" 
+                        rows="4" 
+                        placeholder="How can we help?" 
+                        class="w-full p-3 rounded bg-white/10 border border-white/20 focus:border-green-400 outline-none transition-colors resize-none"
+                    ></textarea>
+                    
+                    <!-- FIXED BUTTON -->
+                    <button 
+                        type="button"
+                        id="sendBtn"
+                        class="btn-responsive bg-green-600 px-8 py-3 rounded-full font-bold hover:bg-green-500 transition-all shadow-lg hover:shadow-green-500/50 no-select"
+                    >
+                        Send Message
+                    </button>
+                    
+                    <p id="auto-reply" class="hidden text-green-400 italic mt-2 animate-pulse">
+                        <i class="fas fa-check-circle mr-2"></i>Thank you! Ben & Sharon Company will respond to your inquiry within 2 hours.
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Footer -->
+        <footer class="py-10 text-center glass rounded-none border-0 border-t border-white/10">
+            <p class="font-bold text-lg">Ben & Sharon Company &copy; 2026</p>
+            <p class="text-sm opacity-60">Driving sustainable democracy through environmental action.</p>
+            <button onclick="scrollToTop()" class="mt-4 text-green-400 hover:text-green-300 transition-colors btn-responsive">
+                <i class="fas fa-arrow-up mr-2"></i>Back to Top
+            </button>
+        </footer>
+    </div>
+
+    <script>
+        // ============================================
+        // DEBUGGING & EVENT LISTENER SETUP
+        // ============================================
+        
+        // Wait for DOM to be fully loaded
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('✅ DOM Loaded - Initializing buttons...');
+            
+            // Initialize all button event listeners
+            initButtonListeners();
+            
+            // Initialize background
+            changeBg();
+            setInterval(changeBg, 10000);
+        });
+
+        // ============================================
+        // BUTTON EVENT LISTENERS (CRITICAL FIX)
+        // ============================================
+        
+        function initButtonListeners() {
+            // Gate Enter Button - MULTIPLE ATTACHMENT METHODS FOR REDUNDANCY
+            
+            const enterBtn = document.getElementById('enterBtn');
+            if (enterBtn) {
+                console.log('Found enter button, attaching listeners...');
+                
+                // Method 1: onclick property
+                enterBtn.onclick = function(e) {
+                    console.log('Enter button clicked via onclick');
+                    handleEnterSite(e);
+                };
+                
+                // Method 2: addEventListener (backup)
+                enterBtn.addEventListener('click', function(e) {
+                    console.log('Enter button clicked via addEventListener');
+                    handleEnterSite(e);
+                });
+                
+                // Method 3: Touch events for mobile
+                enterBtn.addEventListener('touchend', function(e) {
+                    e.preventDefault(); // Prevent double firing
+                    console.log('Enter button touched');
+                    handleEnterSite(e);
+                });
+            } else {
+                console.error('❌ Enter button not found!');
+            }
+
+            // Mobile Menu Toggle
+            const mobileMenuBtn = document.getElementById('mobile-menu-btn');
+            if (mobileMenuBtn) {
+                mobileMenuBtn.addEventListener('click', toggleMobileMenu);
+                mobileMenuBtn.addEventListener('touchend', function(e) {
+                    e.preventDefault();
+                    toggleMobileMenu();
+                });
+            }
+
+            // Send Message Button
+            const sendBtn = document.getElementById('sendBtn');
+            if (sendBtn) {
+                sendBtn.addEventListener('click', handleSendMessage);
+                sendBtn.addEventListener('touchend', function(e) {
+                    e.preventDefault();
+                    handleSendMessage();
+                });
+            }
+
+            // Enter key support for inputs
+            const usernameInput = document.getElementById('username');
+            const emailInput = document.getElementById('email');
+            
+            if (usernameInput && emailInput) {
+                emailInput.addEventListener('keypress', function(e) {
+                    if (e.key === 'Enter') {
+                        e.preventDefault();
+                        handleEnterSite();
+                    }
+                });
+            }
+        }
+
+        // ============================================
+        // CORE FUNCTIONS
+        // ============================================
+        
+        function handleEnterSite(e) {
+            if (e) {
+                e.preventDefault();
+                e.stopPropagation();
+            }
+            
+            console.log('Processing enter site...');
+            
+            const nameInput = document.getElementById('username');
+            const emailInput = document.getElementById('email');
+            const messageDiv = document.getElementById('gate-message');
+            
+            if (!nameInput || !emailInput) {
+                console.error('Input elements not found!');
+                return;
+            }
+            
+            const name = nameInput.value.trim();
+            const email = emailInput.value.trim();
+            
+            console.log('Name:', name, 'Email:', email);
+            
+            // Validation
+            if (!name) {
+                showGateMessage('Please enter a username to join.');
+                nameInput.focus();
+                return;
+            }
+            
+            if (!email || !email.includes('@')) {
+                showGateMessage('Please enter a valid email address.');
+                emailInput.focus();
+                return;
+            }
+            
+            // Success - hide message if shown
+            messageDiv.classList.add('hidden');
+            
+            // Show loading state
+            const btn = document.getElementById('enterBtn');
+            const originalText = btn.textContent;
+            btn.classList.add('btn-loading');
+            btn.textContent = 'Entering...';
+            
+            // Simulate processing delay
+            setTimeout(() => {
+                enterSiteSuccess(name);
+                btn.classList.remove('btn-loading');
+                btn.textContent = originalText;
+            }, 800);
+        }
+
+        function showGateMessage(msg) {
+            const messageDiv = document.getElementById('gate-message');
+            messageDiv.textContent = msg;
+            messageDiv.classList.remove('hidden');
+            
+            // Shake animation
+            const form = document.getElementById('auth-form');
+            form.style.animation = 'none';
+            setTimeout(() => {
+                form.style.animation = 'shake 0.5s';
+            }, 10);
+        }
+
+        function enterSiteSuccess(name) {
+            console.log('Entering site as:', name);
+            
+            const gate = document.getElementById('gate-overlay');
+            const mainContent = document.getElementById('main-content');
+            const greeting = document.getElementById('user-greeting');
+            
+            // Fade out gate
+            gate.style.transition = 'opacity 0.5s ease, visibility 0.5s';
+            gate.style.opacity = '0';
+            gate.style.visibility = 'hidden';
+            
+            setTimeout(() => {
+                gate.style.display = 'none';
+                mainContent.classList.remove('hidden');
+                
+                // Update greeting
+                greeting.innerHTML = `<i class="fas fa-user-circle mr-2"></i>Welcome, ${name}`;
+                
+                // Initialize content
+                initImpactChart();
+                loadSupabaseData();
+                
+                console.log('✅ Site entered successfully');
+            }, 500);
+        }
+
+        function toggleMobileMenu() {
+            console.log('Toggling mobile menu...');
+            const menu = document.getElementById('mobile-menu');
+            menu.classList.toggle('hidden');
+            
+            // Close when clicking outside
+            if (!menu.classList.contains('hidden')) {
+                document.addEventListener('click', closeMobileMenuOutside);
+            }
+        }
+
+        function closeMobileMenuOutside(e) {
+            const menu = document.getElementById('mobile-menu');
+            const btn = document.getElementById('mobile-menu-btn');
+            
+            if (!menu.contains(e.target) && !btn.contains(e.target)) {
+                menu.classList.add('hidden');
+                document.removeEventListener('click', closeMobileMenuOutside);
+            }
+        }
+
+        function handleSendMessage() {
+            console.log('Send button clicked');
+            
+            const subjectInput = document.getElementById('contact-subject');
+            const msgInput = document.getElementById('contact-msg');
+            const replyDiv = document.getElementById('auto-reply');
+            const btn = document.getElementById('sendBtn');
+            
+            const subject = subjectInput ? subjectInput.value.trim() : '';
+            const msg = msgInput ? msgInput.value.trim() : '';
+            
+            if (!msg) {
+                alert('Please enter a message before sending.');
+                if (msgInput) msgInput.focus();
+                return;
+            }
+            
+            // Show loading
+            const originalText = btn.textContent;
+            btn.classList.add('btn-loading');
+            btn.textContent = 'Sending...';
+            
+            setTimeout(() => {
+                // Show auto-reply
+                replyDiv.classList.remove('hidden');
+                
+                // Clear inputs
+                if (subjectInput) subjectInput.value = '';
+                if (msgInput) msgInput.value = '';
+                
+                // Reset button
+                btn.classList.remove('btn-loading');
+                btn.textContent = originalText;
+                
+                // Hide reply after 5 seconds
+                setTimeout(() => {
+                    replyDiv.classList.add('hidden');
+                }, 5000);
+                
+                console.log('✅ Message sent');
+            }, 1500);
+        }
+
+        function copyToClipboard(text) {
+            navigator.clipboard.writeText(text).then(() => {
+                // Visual feedback
+                const original = document.body.style.cursor;
+                document.body.style.cursor = 'copy';
+                setTimeout(() => {
+                    document.body.style.cursor = original;
+                    alert('Copied: ' + text);
+                }, 100);
+            });
+        }
+
+        function scrollToTop() {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        // ============================================
+        // BACKGROUND SLIDESHOW
+        // ============================================
+        
+        const images = [
+            'https://images.unsplash.com/photo-1473448912268-2022ce9509d8?auto=format&fit=crop&w=1920&q=80',
+            'https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?auto=format&fit=crop&w=1920&q=80',
+            'https://images.unsplash.com/photo-1501854140801-50d01698950b?auto=format&fit=crop&w=1920&q=80'
+        ];
+        let currentImg = 0;
+
+        function changeBg() {
+            const bg = document.getElementById('bg-slideshow');
+            if (bg) {
+                bg.style.backgroundImage = `url(${images[currentImg]})`;
+                currentImg = (currentImg + 1) % images.length;
+            }
+        }
+
+        // ============================================
+        // CHART.JS
+        // ============================================
+        
+        function initImpactChart() {
+            const ctx = document.getElementById('impactChart');
+            if (!ctx) {
+                console.error('Chart canvas not found');
+                return;
+            }
+            
+            new Chart(ctx.getContext('2d'), {
+                type: 'bar',
+                data: {
+                    labels: ['Trash (kg)', 'Trees Planted', 'Plastics Diverted', 'Energy Saved (kWh)'],
+                    datasets: [{
+                        label: 'Community Achievements',
+                        data: [1200, 450, 800, 2100],
+                        backgroundColor: 'rgba(52, 211, 153, 0.6)',
+                        borderColor: 'rgba(52, 211, 153, 1)',
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    scales: { 
+                        y: { 
+                            beginAtZero: true, 
+                            grid: { color: 'rgba(255,255,255,0.1)' },
+                            ticks: { color: 'white' }
+                        },
+                        x: {
+                            ticks: { color: 'white' }
+                        }
+                    },
+                    plugins: {
+                        legend: {
+                            labels: { color: 'white' }
+                        }
+                    }
+                }
+            });
+        }
+
+        // ============================================
+        // SUPABASE DATA (MOCK)
+        // ============================================
+        
+        function loadSupabaseData() {
+            const mockData = [
+                { title: "Trees", value: "450", color: "text-green-400", icon: "fa-tree" },
+                { title: "Plastic", value: "800kg", color: "text-blue-400", icon: "fa-recycle" },
+                { title: "Participants", value: "1,200", color: "text-purple-400", icon: "fa-users" },
+                { title: "Cleanups", value: "24", color: "text-red-400", icon: "fa-broom" }
+            ];
+
+            const container = document.getElementById('realtime-cards');
+            if (!container) return;
+            
+            container.innerHTML = '';
+            
+            mockData.forEach((item, index) => {
+                const card = document.createElement('div');
+                card.className = 'glass p-6 text-center floating btn-responsive cursor-pointer hover:bg-white/20 transition-all';
+                card.style.animationDelay = `${index * 0.2}s`;
+                card.innerHTML = `
+                    <i class="fas ${item.icon} text-2xl mb-2 ${item.color}"></i>
+                    <h4 class="text-sm uppercase opacity-70 mb-1">${item.title}</h4>
+                    <p class="text-3xl font-bold ${item.color}">${item.value}</p>
+                `;
+                
+                // Add click interaction
+                card.addEventListener('click', () => {
+                    card.style.transform = 'scale(0.95)';
+                    setTimeout(() => {
+                        card.style.transform = '';
+                    }, 150);
+                });
+                
+                container.appendChild(card);
+            });
+        }
+
+        // Add shake animation dynamically
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes shake {
+                0%, 100% { transform: translateX(0); }
+                25% { transform: translateX(-10px); }
+                75% { transform: translateX(10px); }
+            }
+        `;
+        document.head.appendChild(style);
+    </script>
+</body>
+</html>
