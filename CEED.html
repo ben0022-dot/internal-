@@ -1,0 +1,1209 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NAIROBI CITY TRACK | Eco-Track Platform</title>
+    
+    <!-- External APIs -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+
+    <style>
+        * { font-family: 'Poppins', sans-serif; }
+        body { overflow-x: hidden; background: #0f172a; }
+        
+        /* Glassmorphism */
+        .glass {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 24px;
+        }
+        
+        .glass-card {
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        
+        .glass-card:hover {
+            transform: translateY(-5px);
+            background: rgba(255, 255, 255, 0.08);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.4);
+            border-color: rgba(34,197,94,0.3);
+        }
+
+        /* Animations */
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+        
+        @keyframes slideIn {
+            from { transform: translateX(100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: scale(0.95); }
+            to { opacity: 1; transform: scale(1); }
+        }
+
+        .animate-float { animation: float 6s ease-in-out infinite; }
+        .animate-fade-in { animation: fadeIn 0.6s ease-out forwards; }
+
+        /* Button System */
+        .btn-primary {
+            position: relative;
+            overflow: hidden;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            user-select: none;
+        }
+        
+        .btn-primary:active { transform: scale(0.97); }
+        
+        .btn-primary::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(45deg, transparent 30%, rgba(255,255,255,0.2) 50%, transparent 70%);
+            transform: translateX(-100%);
+            transition: transform 0.6s;
+        }
+        
+        .btn-primary:hover::after { transform: translateX(100%); }
+
+        .btn-loading {
+            opacity: 0.7;
+            pointer-events: none;
+        }
+        
+        .btn-loading::before {
+            content: '';
+            display: inline-block;
+            width: 14px;
+            height: 14px;
+            border: 2px solid rgba(255,255,255,0.3);
+            border-top-color: white;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+            margin-right: 8px;
+            vertical-align: middle;
+        }
+
+        @keyframes spin { to { transform: rotate(360deg); } }
+
+        /* Form Inputs */
+        .input-field {
+            background: rgba(0,0,0,0.3);
+            border: 1px solid rgba(255,255,255,0.1);
+            color: white;
+            transition: all 0.3s;
+        }
+        
+        .input-field:focus {
+            background: rgba(0,0,0,0.5);
+            border-color: #22c55e;
+            outline: none;
+            box-shadow: 0 0 15px rgba(34,197,94,0.15);
+        }
+        
+        .input-field::placeholder { color: rgba(255,255,255,0.4); }
+
+        /* Modals */
+        .modal-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.85);
+            backdrop-filter: blur(8px);
+            z-index: 200;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+        
+        .modal-overlay.active { 
+            display: flex; 
+            opacity: 1; 
+        }
+
+        /* Toast Notifications */
+        .toast-container {
+            position: fixed;
+            bottom: 24px;
+            right: 24px;
+            z-index: 300;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .toast {
+            padding: 16px 24px;
+            border-radius: 12px;
+            color: white;
+            font-weight: 500;
+            font-size: 0.9rem;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            animation: slideIn 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+            min-width: 300px;
+        }
+        
+        .toast-success { background: linear-gradient(135deg, #10b981, #059669); border-left: 4px solid #34d399; }
+        .toast-error { background: linear-gradient(135deg, #ef4444, #dc2626); border-left: 4px solid #f87171; }
+        .toast-info { background: linear-gradient(135deg, #3b82f6, #2563eb); border-left: 4px solid #60a5fa; }
+
+        /* Background Slideshow */
+        .bg-slideshow {
+            position: absolute;
+            inset: 0;
+            z-index: 0;
+            overflow: hidden;
+        }
+        
+        .bg-slide {
+            position: absolute;
+            inset: 0;
+            background-size: cover;
+            background-position: center;
+            opacity: 0;
+            transition: opacity 1.5s ease-in-out;
+        }
+        
+        .bg-slide.active { opacity: 0.6; } /* Slightly dimmed */
+        
+        .bg-overlay {
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(135deg, #0f172a 0%, #064e3b 100%);
+            z-index: 1;
+        }
+
+        /* Scrollbar */
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: rgba(0,0,0,0.2); }
+        ::-webkit-scrollbar-thumb { background: rgba(34,197,94,0.4); border-radius: 10px; }
+        ::-webkit-scrollbar-thumb:hover { background: rgba(34,197,94,0.7); }
+    </style>
+</head>
+<body class="text-white antialiased selection:bg-emerald-500 selection:text-white">
+
+    <!-- Background System (Shared) -->
+    <div class="fixed inset-0 -z-20">
+        <div id="main-bg-slideshow" class="bg-slideshow">
+            <!-- High quality nature backgrounds -->
+            <div class="bg-slide active" style="background-image: url('https://images.unsplash.com/photo-1441974231531-c6227db76b6e?w=1920&q=80');"></div>
+            <div class="bg-slide" style="background-image: url('https://images.unsplash.com/photo-1542601906990-b4d3fb778b09?w=1920&q=80');"></div>
+            <div class="bg-slide" style="background-image: url('https://images.unsplash.com/photo-1473448912268-2022ce9509d8?w=1920&q=80');"></div>
+            <div class="bg-slide" style="background-image: url('https://images.unsplash.com/photo-1501854140801-50d01698950b?w=1920&q=80');"></div>
+        </div>
+        <div class="bg-overlay"></div>
+    </div>
+
+    <!-- Backend Status Indicator -->
+    <div class="fixed bottom-6 right-6 z-50 glass px-4 py-2 flex items-center gap-3 text-xs md:text-sm shadow-2xl">
+        <div class="flex items-center gap-2">
+            <span id="db-dot" class="w-2.5 h-2.5 rounded-full bg-emerald-500 shadow-[0_0_10px_rgba(16,185,129,0.8)] animate-pulse"></span>
+            <span id="db-status" class="text-emerald-400 font-medium">System Online</span>
+        </div>
+        <span class="w-px h-4 bg-white/20"></span>
+        <span id="db-latency" class="text-white/50 font-mono">24ms</span>
+    </div>
+
+    <!-- Toast Container -->
+    <div id="toast-container" class="toast-container"></div>
+
+    <!-- ========================================== -->
+    <!-- AUTHENTICATION GATE -->
+    <!-- ========================================== -->
+    <div id="auth-gate" class="fixed inset-0 z-[100] flex items-center justify-center p-4">
+        
+        <!-- Gate Content -->
+        <div class="relative z-10 glass p-8 md:p-12 w-full max-w-md animate-float shadow-2xl border border-emerald-500/20">
+            
+            <!-- Brand -->
+            <div class="text-center mb-8">
+                <div class="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-gradient-to-br from-emerald-500 to-green-700 mb-4 shadow-lg shadow-emerald-500/20">
+                    <i class="fas fa-leaf text-2xl text-white"></i>
+                </div>
+                <h1 class="text-3xl font-bold mb-2 tracking-tight text-white drop-shadow-md">Eco-Track</h1>
+                <p class="text-emerald-200/80 text-sm font-medium">Nairobi Environmental Initiative</p>
+            </div>
+
+            <!-- Auth Tabs -->
+            <div class="flex mb-6 bg-black/40 rounded-xl p-1 backdrop-blur-sm border border-white/5">
+                <button type="button" id="tab-login" onclick="switchAuthTab('login')" 
+                        class="flex-1 py-2.5 rounded-lg bg-emerald-600 text-white font-semibold text-sm transition-all shadow-md">
+                    Login
+                </button>
+                <button type="button" id="tab-signup" onclick="switchAuthTab('signup')" 
+                        class="flex-1 py-2.5 rounded-lg text-white/60 font-semibold text-sm hover:text-white transition-all hover:bg-white/5">
+                    Sign Up
+                </button>
+            </div>
+
+            <!-- Login Form -->
+            <form id="form-login" class="space-y-4" onsubmit="return false;">
+                <div class="relative group">
+                    <i class="fas fa-envelope absolute left-4 top-1/2 -translate-y-1/2 text-white/40 group-focus-within:text-emerald-400 transition-colors"></i>
+                    <input type="email" id="login-email" placeholder="Email Address" 
+                           class="input-field w-full pl-12 pr-4 py-3.5 rounded-xl text-sm" required>
+                </div>
+                <div class="relative group">
+                    <i class="fas fa-lock absolute left-4 top-1/2 -translate-y-1/2 text-white/40 group-focus-within:text-emerald-400 transition-colors"></i>
+                    <input type="password" id="login-password" placeholder="Password" 
+                           class="input-field w-full pl-12 pr-4 py-3.5 rounded-xl text-sm" required>
+                </div>
+                <button type="button" id="btn-login" onclick="handleLogin()" 
+                        class="btn-primary w-full bg-gradient-to-r from-emerald-600 to-green-500 hover:from-emerald-500 hover:to-green-400 py-3.5 rounded-xl font-bold text-sm tracking-wide shadow-lg shadow-emerald-900/20 border border-emerald-500/30">
+                    Login to Dashboard
+                </button>
+            </form>
+
+            <!-- Signup Form -->
+            <form id="form-signup" class="space-y-4 hidden" onsubmit="return false;">
+                <div class="relative group">
+                    <i class="fas fa-user absolute left-4 top-1/2 -translate-y-1/2 text-white/40 group-focus-within:text-emerald-400 transition-colors"></i>
+                    <input type="text" id="signup-name" placeholder="Full Name" 
+                           class="input-field w-full pl-12 pr-4 py-3.5 rounded-xl text-sm" required>
+                </div>
+                <div class="relative group">
+                    <i class="fas fa-envelope absolute left-4 top-1/2 -translate-y-1/2 text-white/40 group-focus-within:text-emerald-400 transition-colors"></i>
+                    <input type="email" id="signup-email" placeholder="Email Address" 
+                           class="input-field w-full pl-12 pr-4 py-3.5 rounded-xl text-sm" required>
+                </div>
+                <div class="relative group">
+                    <i class="fas fa-lock absolute left-4 top-1/2 -translate-y-1/2 text-white/40 group-focus-within:text-emerald-400 transition-colors"></i>
+                    <input type="password" id="signup-password" placeholder="Create Password" 
+                           class="input-field w-full pl-12 pr-4 py-3.5 rounded-xl text-sm" required>
+                </div>
+                <button type="button" id="btn-signup" onclick="handleSignup()" 
+                        class="btn-primary w-full bg-gradient-to-r from-emerald-600 to-green-500 hover:from-emerald-500 hover:to-green-400 py-3.5 rounded-xl font-bold text-sm tracking-wide shadow-lg shadow-emerald-900/20 border border-emerald-500/30">
+                    Create Account
+                </button>
+            </form>
+
+            <!-- Event Countdown -->
+            <div class="mt-8 pt-6 border-t border-white/10 text-center">
+                <p class="text-xs text-white/40 mb-2 uppercase tracking-widest">Next Global Event</p>
+                <div id="countdown" class="text-2xl font-mono font-bold text-emerald-400 tracking-wider drop-shadow-lg">00:00:00:00</div>
+                <p class="text-xs text-white/50 mt-1">World Cleanup Day Countdown</p>
+            </div>
+            
+            <p id="auth-error" class="hidden mt-4 text-red-400 text-xs text-center bg-red-500/10 p-3 rounded-lg border border-red-500/20"></p>
+        </div>
+    </div>
+
+    <!-- ========================================== -->
+    <!-- M-PESA DONATION MODAL -->
+    <!-- ========================================== -->
+    <div id="mpesa-modal" class="modal-overlay" onclick="if(event.target===this) closeMpesaModal()">
+        <div class="modal-content glass w-full max-w-md mx-4 p-6 md:p-8 border border-emerald-500/20 shadow-2xl">
+            <div class="flex justify-between items-center mb-6">
+                <h3 class="text-xl font-bold flex items-center gap-3 text-white">
+                    <span class="w-8 h-8 rounded bg-green-600 flex items-center justify-center text-xs"><i class="fas fa-mobile-alt"></i></span>
+                    M-Pesa Secure Pay
+                </h3>
+                <button onclick="closeMpesaModal()" class="text-white/50 hover:text-white transition-colors p-2 rounded-lg hover:bg-white/10">
+                    <i class="fas fa-times text-lg"></i>
+                </button>
+            </div>
+
+            <div class="space-y-5">
+                <div>
+                    <label class="block text-xs text-emerald-300 mb-2 uppercase tracking-wide font-semibold">Select Amount (KES)</label>
+                    <div class="grid grid-cols-3 gap-2 mb-3">
+                        <button type="button" onclick="setDonationAmount(100)" class="amt-btn py-2 rounded-lg bg-white/5 hover:bg-emerald-600 transition-all text-sm font-medium border border-white/10 hover:border-emerald-400">100</button>
+                        <button type="button" onclick="setDonationAmount(500)" class="amt-btn py-2 rounded-lg bg-white/5 hover:bg-emerald-600 transition-all text-sm font-medium border border-white/10 hover:border-emerald-400">500</button>
+                        <button type="button" onclick="setDonationAmount(1000)" class="amt-btn py-2 rounded-lg bg-white/5 hover:bg-emerald-600 transition-all text-sm font-medium border border-white/10 hover:border-emerald-400">1,000</button>
+                        <button type="button" onclick="setDonationAmount(2000)" class="amt-btn py-2 rounded-lg bg-white/5 hover:bg-emerald-600 transition-all text-sm font-medium border border-white/10 hover:border-emerald-400">2,000</button>
+                        <button type="button" onclick="setDonationAmount(5000)" class="amt-btn py-2 rounded-lg bg-white/5 hover:bg-emerald-600 transition-all text-sm font-medium border border-white/10 hover:border-emerald-400">5,000</button>
+                        <button type="button" onclick="setDonationAmount(10000)" class="amt-btn py-2 rounded-lg bg-white/5 hover:bg-emerald-600 transition-all text-sm font-medium border border-white/10 hover:border-emerald-400">10,000</button>
+                    </div>
+                    <input type="number" id="donation-amount" placeholder="Enter Custom Amount" 
+                           class="input-field w-full px-4 py-3 rounded-xl text-center font-bold text-lg">
+                </div>
+
+                <div>
+                    <label class="block text-xs text-emerald-300 mb-2 uppercase tracking-wide font-semibold">M-Pesa Phone Number</label>
+                    <div class="relative">
+                        <span class="absolute left-4 top-1/2 -translate-y-1/2 text-white/50 font-medium text-sm">+254</span>
+                        <input type="tel" id="donation-phone" placeholder="7XX XXX XXX" 
+                               class="input-field w-full pl-16 pr-4 py-3 rounded-xl text-sm" maxlength="9">
+                    </div>
+                </div>
+
+                <button type="button" id="btn-donate" onclick="processMpesaPayment()" 
+                        class="btn-primary w-full bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-500 hover:to-emerald-500 py-4 rounded-xl font-bold text-sm tracking-wide shadow-lg shadow-green-900/20 border border-green-500/30 mt-2">
+                    Send STK Push Request
+                </button>
+
+                <p class="text-[10px] text-center text-white/30 flex items-center justify-center gap-1">
+                    <i class="fas fa-lock"></i> 256-bit SSL Secured by Safaricom API
+                </p>
+            </div>
+
+            <!-- Payment Feedback UI -->
+            <div id="payment-feedback" class="hidden mt-4 p-4 rounded-xl text-center bg-black/20 border border-white/5">
+                <!-- Content injected by JS -->
+            </div>
+        </div>
+    </div>
+
+    <!-- ========================================== -->
+    <!-- MAIN APPLICATION DASHBOARD -->
+    <!-- ========================================== -->
+    <div id="app-main" class="hidden min-h-screen relative z-10">
+        
+        <!-- Navigation -->
+        <nav class="glass sticky top-4 mx-4 my-4 z-40 px-6 py-3 flex justify-between items-center border border-white/5">
+            <div class="flex items-center gap-3 cursor-pointer group" onclick="scrollTo('home')">
+                <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-emerald-500 to-green-700 flex items-center justify-center shadow-lg group-hover:scale-105 transition-transform">
+                    <i class="fas fa-leaf text-white"></i>
+                </div>
+                <div>
+                    <h2 class="font-bold text-lg leading-tight text-white tracking-wide">NAIROBI CITY TRACK</h2>
+                    <p class="text-[10px] text-emerald-400 uppercase tracking-widest font-semibold">Eco-System</p>
+                </div>
+            </div>
+
+            <!-- Desktop Nav -->
+            <div class="nav-desktop hidden md:flex items-center gap-1">
+                <a href="#home" class="px-4 py-2 rounded-lg text-sm font-medium text-white/70 hover:text-white hover:bg-white/5 transition-all">Home</a>
+                <a href="#about" class="px-4 py-2 rounded-lg text-sm font-medium text-white/70 hover:text-white hover:bg-white/5 transition-all">About</a>
+                <a href="#services" class="px-4 py-2 rounded-lg text-sm font-medium text-white/70 hover:text-white hover:bg-white/5 transition-all">Services</a>
+                <a href="#impact" class="px-4 py-2 rounded-lg text-sm font-medium text-white/70 hover:text-white hover:bg-white/5 transition-all">Impact Data</a>
+                <a href="#donate" class="px-4 py-2 rounded-lg bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 hover:bg-emerald-500 hover:text-white transition-all text-sm font-semibold">
+                    <i class="fas fa-heart mr-1"></i>Donate
+                </a>
+                <a href="#contact" class="px-4 py-2 rounded-lg text-sm font-medium text-white/70 hover:text-white hover:bg-white/5 transition-all">Contact</a>
+            </div>
+
+            <!-- User Profile Section -->
+            <div class="flex items-center gap-4">
+                <div class="hidden lg:block text-right mr-2">
+                    <div id="live-clock" class="text-sm font-mono font-bold text-white/90">00:00:00</div>
+                    <div id="live-date" class="text-[10px] text-white/40 uppercase">Loading...</div>
+                </div>
+                <div class="flex items-center gap-3 pl-4 border-l border-white/10">
+                    <div class="text-right hidden sm:block">
+                        <div id="display-username" class="font-semibold text-sm text-white">User</div>
+                        <div class="text-[10px] text-emerald-400">Volunteer Lvl 5</div>
+                    </div>
+                    <img src="https://ui-avatars.com/api/?name=User&background=10b981&color=fff" alt="User Avatar" id="user-avatar" class="w-10 h-10 rounded-full border-2 border-emerald-500/30">
+                    <button onclick="handleLogout()" class="p-2 hover:bg-red-500/20 rounded-lg text-red-400/70 hover:text-red-400 transition-colors" title="Logout">
+                        <i class="fas fa-sign-out-alt"></i>
+                    </button>
+                </div>
+                <!-- Mobile Toggle -->
+                <button id="btn-mobile-toggle" class="nav-mobile md:hidden p-2 hover:bg-white/10 rounded-lg text-white/80">
+                    <i class="fas fa-bars text-lg"></i>
+                </button>
+            </div>
+        </nav>
+
+        <!-- Mobile Menu -->
+        <div id="mobile-menu" class="hidden md:hidden fixed top-20 left-4 right-4 z-30 glass p-2 flex-col items-center gap-2 border border-white/10 shadow-xl">
+            <a href="#home" class="w-full py-3 px-4 text-center hover:bg-white/5 rounded-lg text-white font-medium">Home</a>
+            <a href="#about" class="w-full py-3 px-4 text-center hover:bg-white/5 rounded-lg text-white font-medium">About</a>
+            <a href="#services" class="w-full py-3 px-4 text-center hover:bg-white/5 rounded-lg text-white font-medium">Services</a>
+            <a href="#impact" class="w-full py-3 px-4 text-center hover:bg-white/5 rounded-lg text-white font-medium">Impact</a>
+            <a href="#donate" class="w-full py-3 px-4 text-center bg-emerald-600/20 text-emerald-300 rounded-lg font-bold">Donate Now</a>
+            <a href="#contact" class="w-full py-3 px-4 text-center hover:bg-white/5 rounded-lg text-white font-medium">Contact</a>
+        </div>
+
+        <!-- HOME SECTION -->
+        <section id="home" class="px-4 md:px-8 py-8 max-w-7xl mx-auto">
+            <div class="text-center mb-10">
+                <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-xs font-semibold text-emerald-400 uppercase tracking-wider mb-4">
+                    <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
+                    Live Environmental Data
+                </div>
+                <h1 class="text-4xl md:text-6xl font-bold mb-4 text-white tracking-tight">Community Impact <span class="text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 to-green-200">Dashboard</span></h1>
+                <p class="text-lg text-white/60 max-w-2xl mx-auto">Real-time tracking of conservation efforts, waste management, and reforestation projects across Nairobi.</p>
+            </div>
+
+            <!-- Stats Grid -->
+            <div id="stats-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6 mb-12">
+                <!-- Stats Injected via JS -->
+            </div>
+
+            <!-- Charts Section -->
+            <div class="glass p-6 md:p-8 mb-12 border border-white/5">
+                <div class="flex flex-col md:flex-row justify-between items-center mb-8 gap-4">
+                    <h2 class="text-xl font-bold flex items-center gap-2"><i class="fas fa-chart-line text-emerald-400"></i> Impact Analytics</h2>
+                    <div class="flex bg-black/30 rounded-lg p-1">
+                        <button onclick="updateChart('weekly')" class="chart-toggle px-4 py-1.5 rounded-md text-xs font-medium bg-emerald-600 text-white shadow transition-all">Weekly</button>
+                        <button onclick="updateChart('monthly')" class="chart-toggle px-4 py-1.5 rounded-md text-xs font-medium text-white/50 hover:text-white transition-all">Monthly</button>
+                        <button onclick="updateChart('yearly')" class="chart-toggle px-4 py-1.5 rounded-md text-xs font-medium text-white/50 hover:text-white transition-all">Yearly</button>
+                    </div>
+                </div>
+                <div class="grid md:grid-cols-2 gap-8 h-80">
+                    <canvas id="chart-bar"></canvas>
+                    <canvas id="chart-doughnut"></canvas>
+                </div>
+            </div>
+        </section>
+
+        <!-- ABOUT SECTION -->
+        <section id="about" class="px-4 md:px-8 py-12 max-w-7xl mx-auto">
+            <div class="glass p-8 md:p-12 relative overflow-hidden">
+                <div class="absolute top-0 right-0 w-64 h-64 bg-emerald-500/10 rounded-full blur-3xl -mr-20 -mt-20"></div>
+                <div class="relative z-10 grid md:grid-cols-2 gap-12 items-center">
+                    <div>
+                        <h2 class="text-3xl md:text-4xl font-bold mb-6">ABOUT NAIROBI CITY TRACK</h2>
+                        <p class="text-lg text-white/70 mb-8 leading-relaxed">
+                            We are a technology-driven environmental collective transforming local conservation into measurable global impact. Connecting over 50,000 activists across 120 communities through data transparency.
+                        </p>
+                        
+                        <div class="space-y-4">
+                            <div class="flex items-start gap-4">
+                                <div class="w-8 h-8 rounded bg-emerald-500/20 flex items-center justify-center shrink-0 text-emerald-400 mt-1"><i class="fas fa-check text-xs"></i></div>
+                                <div>
+                                    <h4 class="font-bold text-white">Data-Driven Decisions</h4>
+                                    <p class="text-sm text-white/50">Using real-time sensors to track waste and water quality.</p>
+                                </div>
+                            </div>
+                            <div class="flex items-start gap-4">
+                                <div class="w-8 h-8 rounded bg-blue-500/20 flex items-center justify-center shrink-0 text-blue-400 mt-1"><i class="fas fa-users text-xs"></i></div>
+                                <div>
+                                    <h4 class="font-bold text-white">Community Mobilization</h4>
+                                    <p class="text-sm text-white/50">Coordinating volunteers via our geo-tracking platform.</p>
+                                </div>
+                            </div>
+                            <div class="flex items-start gap-4">
+                                <div class="w-8 h-8 rounded bg-purple-500/20 flex items-center justify-center shrink-0 text-purple-400 mt-1"><i class="fas fa-hand-holding-usd text-xs"></i></div>
+                                <div>
+                                    <h4 class="font-bold text-white">Transparent Funding</h4>
+                                    <p class="text-sm text-white/50">Every M-Pesa donation is tracked on the public ledger.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="grid grid-cols-2 gap-4">
+                        <img src="https://images.unsplash.com/photo-1593113598332-cd288d649433?w=500&q=80" class="rounded-2xl shadow-2xl w-full h-48 object-cover hover:scale-[1.02] transition-transform duration-500">
+                        <img src="https://images.unsplash.com/photo-1542601906990-b4d3fb778b09?w=500&q=80" class="rounded-2xl shadow-2xl w-full h-48 object-cover hover:scale-[1.02] transition-transform duration-500 mt-8">
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SERVICES SECTION -->
+        <section id="services" class="px-4 md:px-8 py-12 max-w-7xl mx-auto">
+            <h2 class="text-3xl font-bold mb-10 text-center">Conservation Services</h2>
+            
+            <div class="grid md:grid-cols-2 gap-8 mb-12">
+                <div class="glass p-8 border border-white/5">
+                    <h3 class="text-xl font-bold mb-6 text-emerald-400 border-b border-white/10 pb-2">Our Core Initiatives</h3>
+                    <ol id="services-list" class="space-y-3 relative">
+                        <!-- Injected from JS -->
+                    </ol>
+                </div>
+
+                <div class="glass p-8 border border-white/5">
+                    <h3 class="text-xl font-bold mb-6 text-orange-400 border-b border-white/10 pb-2">Active Environmental Challenges</h3>
+                    <ul id="challenges-list" class="space-y-3">
+                        <!-- Injected from JS -->
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- IMPACT DATA SECTION -->
+        <section id="impact" class="px-4 md:px-8 py-12 max-w-7xl mx-auto">
+            <div class="glass p-8 border border-white/5">
+                <div class="flex justify-between items-center mb-8">
+                    <h2 class="text-2xl font-bold flex items-center gap-3">
+                        <i class="fas fa-database text-blue-400"></i> Live Database Records
+                    </h2>
+                    <button onclick="refreshData()" class="text-xs flex items-center gap-2 bg-white/5 hover:bg-white/10 px-3 py-2 rounded-lg transition-colors border border-white/10">
+                        <i class="fas fa-sync-alt"></i> Refresh Data
+                    </button>
+                </div>
+                
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left border-collapse">
+                        <thead class="bg-white/5 text-xs uppercase tracking-wider text-white/50">
+                            <tr>
+                                <th class="p-4 rounded-tl-lg">Event ID</th>
+                                <th class="p-4">Activity</th>
+                                <th class="p-4">Location</th>
+                                <th class="p-4">Impact Metric</th>
+                                <th class="p-4">Status</th>
+                                <th class="p-4 rounded-tr-lg">Completion</th>
+                            </tr>
+                        </thead>
+                        <tbody id="data-table" class="text-sm divide-y divide-white/5">
+                            <!-- Injected from JS -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <!-- DONATION SECTION -->
+        <section id="donate" class="px-4 md:px-8 py-16 max-w-5xl mx-auto">
+            <div class="glass p-8 md:p-12 text-center relative overflow-hidden border border-emerald-500/20">
+                <div class="absolute inset-0 bg-gradient-to-br from-emerald-600/10 to-transparent pointer-events-none"></div>
+                <div class="relative z-10">
+                    <div class="inline-flex items-center justify-center w-16 h-16 rounded-full bg-emerald-500 text-white mb-6 animate-bounce shadow-[0_0_20px_rgba(16,185,129,0.5)]">
+                        <i class="fas fa-gift text-2xl"></i>
+                    </div>
+                    <h2 class="text-4xl font-bold mb-4">Support Our Mission</h2>
+                    <p class="text-xl text-white/70 mb-8 max-w-2xl mx-auto">
+                        Your contribution funds tree planting, river cleanups, and environmental education directly in Nairobi communities.
+                    </p>
+                    
+                    <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-10">
+                        <div class="glass-card p-4 rounded-xl">
+                            <i class="fas fa-money-bill-wave text-2xl text-emerald-400 mb-2"></i>
+                            <div class="text-xl font-bold">KES 1.4M</div>
+                            <div class="text-xs text-white/50">Raised in 2024</div>
+                        </div>
+                        <div class="glass-card p-4 rounded-xl">
+                            <i class="fas fa-tree text-2xl text-green-400 mb-2"></i>
+                            <div class="text-xl font-bold">12,847</div>
+                            <div class="text-xs text-white/50">Trees Planted</div>
+                        </div>
+                        <div class="glass-card p-4 rounded-xl">
+                            <i class="fas fa-trash-alt text-2xl text-blue-400 mb-2"></i>
+                            <div class="text-xl font-bold">45.2T</div>
+                            <div class="text-xs text-white/50">Waste Collected</div>
+                        </div>
+                        <div class="glass-card p-4 rounded-xl">
+                            <i class="fas fa-hands-helping text-2xl text-purple-400 mb-2"></i>
+                            <div class="text-xl font-bold">3,421</div>
+                            <div class="text-xs text-white/50">Volunteers</div>
+                        </div>
+                    </div>
+
+                    <button onclick="openMpesaModal()" class="btn-primary px-10 py-4 bg-gradient-to-r from-green-600 to-emerald-600 rounded-xl font-bold text-lg shadow-lg hover:shadow-emerald-500/25 border border-green-500/30 transform hover:-translate-y-1 transition-all">
+                        Donate via M-Pesa
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- CONTACT SECTION -->
+        <section id="contact" class="px-4 md:px-8 py-12 max-w-7xl mx-auto">
+            <div class="glass p-8 md:p-12 border border-white/5">
+                <h2 class="text-3xl font-bold mb-10 text-center">Connect With Us</h2>
+                
+                <div class="grid md:grid-cols-2 gap-12">
+                    <div class="space-y-6">
+                        <div class="flex items-center gap-4 p-4 bg-white/5 rounded-xl hover:bg-white/10 transition-colors group cursor-pointer" onclick="copyToClipboard('info@ecotrack.ke')">
+                            <div class="w-12 h-12 bg-emerald-500/20 rounded-lg flex items-center justify-center group-hover:scale-110 transition-transform">
+                                <i class="fas fa-envelope text-emerald-400"></i>
+                            </div>
+                            <div>
+                                <p class="text-xs text-white/50 uppercase tracking-wide">Email</p>
+                                <p class="font-semibold">info@nairobicitytrack.co.ke</p>
+                            </div>
+                        </div>
+                        
+                        <div class="flex items-center gap-4 p-4 bg-white/5 rounded-xl hover:bg-white/10 transition-colors group cursor-pointer" onclick="copyToClipboard('+254700123456')">
+                            <div class="w-12 h-12 bg-emerald-500/20 rounded-lg flex items-center justify-center group-hover:scale-110 transition-transform">
+                                <i class="fas fa-phone text-emerald-400"></i>
+                            </div>
+                            <div>
+                                <p class="text-xs text-white/50 uppercase tracking-wide">Phone</p>
+                                <p class="font-semibold">+254 793 805 279</p>
+                            </div>
+                        </div>
+
+                        <div class="pt-4">
+                            <p class="text-sm text-white/50 mb-4">Follow Our Impact</p>
+                            <div class="flex gap-3">
+                                <a href="#" class="w-10 h-10 bg-white/5 hover:bg-blue-600 rounded-lg flex items-center justify-center hover:text-white transition-all"><i class="fab fa-facebook-f"></i></a>
+                                <a href="#" class="w-10 h-10 bg-white/5 hover:bg-gradient-to-br hover:from-purple-500 hover:to-pink-500 rounded-lg flex items-center justify-center hover:text-white transition-all"><i class="fab fa-instagram"></i></a>
+                                <a href="#" class="w-10 h-10 bg-white/5 hover:bg-black rounded-lg flex items-center justify-center hover:text-white transition-all border border-white/10"><i class="fab fa-tiktok"></i></a>
+                                <a href="#" class="w-10 h-10 bg-white/5 hover:bg-blue-400 rounded-lg flex items-center justify-center hover:text-white transition-all"><i class="fab fa-twitter"></i></a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <form id="contact-form" class="space-y-4" onsubmit="return false;">
+                        <div class="grid grid-cols-2 gap-4">
+                            <input type="text" id="contact-name" placeholder="Your Name" class="input-field w-full px-4 py-3 rounded-lg">
+                            <input type="email" id="contact-email" placeholder="Your Email" class="input-field w-full px-4 py-3 rounded-lg">
+                        </div>
+                        <textarea id="contact-message" rows="4" placeholder="Your Message" class="input-field w-full px-4 py-3 rounded-lg resize-none"></textarea>
+                        <button type="button" onclick="submitContact()" class="btn-primary w-full bg-emerald-600 hover:bg-emerald-500 py-3 rounded-lg font-bold transition-colors border border-emerald-500/30">
+                            Send Message
+                        </button>
+                        <div id="contact-reply" class="hidden p-3 bg-emerald-500/10 border border-emerald-500/20 rounded-lg text-emerald-400 text-sm text-center">
+                            <i class="fas fa-check-circle mr-2"></i>Message received! We'll respond shortly.
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </section>
+
+        <!-- Footer -->
+        <footer class="mt-12 py-8 px-4 border-t border-white/5 bg-black/20 backdrop-blur-lg">
+            <div class="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-4">
+                <div class="flex items-center gap-2">
+                    <i class="fas fa-leaf text-emerald-500"></i>
+                    <h3 class="text-lg font-bold text-white tracking-wide">NAIROBI CITY TRACK</h3>
+                </div>
+                <p class="text-sm text-white/40">© 2024 Eco-Track Platform. All rights reserved.</p>
+                <div class="flex gap-6 text-sm text-white/40">
+                    <a href="#" class="hover:text-emerald-400 transition-colors">Privacy</a>
+                    <a href="#" class="hover:text-emerald-400 transition-colors">Terms</a>
+                </div>
+            </div>
+        </footer>
+    </div>
+
+    <!-- ========================================== -->
+    <!-- JAVASCRIPT LOGIC -->
+    <!-- ========================================== -->
+    <script>
+        // --- STATE MANAGEMENT ---
+        const AppState = {
+            user: null,
+            token: localStorage.getItem('eco_token'),
+            charts: {},
+            donationAmount: 0,
+            mockLatency: 24
+        };
+
+        // --- UTILITIES ---
+        function showToast(message, type = 'info') {
+            const container = document.getElementById('toast-container');
+            const toast = document.createElement('div');
+            const icons = { success: 'fa-check-circle', error: 'fa-exclamation-circle', info: 'fa-info-circle' };
+            
+            toast.className = `toast toast-${type}`;
+            toast.innerHTML = `<i class="fas ${icons[type]} text-lg"></i> <span>${message}</span>`;
+            
+            container.appendChild(toast);
+            
+            // Auto remove
+            setTimeout(() => {
+                toast.style.opacity = '0';
+                toast.style.transform = 'translateX(100%)';
+                setTimeout(() => toast.remove(), 400);
+            }, 3500);
+        }
+
+        function setLoading(btnId, isLoading) {
+            const btn = document.getElementById(btnId);
+            if (!btn) return;
+            
+            if (isLoading) {
+                btn.classList.add('btn-loading');
+                btn.dataset.originalText = btn.innerText;
+            } else {
+                btn.classList.remove('btn-loading');
+                btn.innerText = btn.dataset.originalText || btn.innerText;
+            }
+        }
+
+        function copyToClipboard(text) {
+            navigator.clipboard.writeText(text).then(() => {
+                showToast(`Copied: ${text}`, 'success');
+            });
+        }
+
+        // --- AUTHENTICATION ---
+        function switchAuthTab(tab) {
+            const loginForm = document.getElementById('form-login');
+            const signupForm = document.getElementById('form-signup');
+            const loginTab = document.getElementById('tab-login');
+            const signupTab = document.getElementById('tab-signup');
+
+            // Reset error
+            document.getElementById('auth-error').classList.add('hidden');
+
+            if (tab === 'login') {
+                loginForm.classList.remove('hidden');
+                signupForm.classList.add('hidden');
+                loginTab.className = 'flex-1 py-2.5 rounded-lg bg-emerald-600 text-white font-semibold text-sm transition-all shadow-md';
+                signupTab.className = 'flex-1 py-2.5 rounded-lg text-white/60 font-semibold text-sm hover:text-white transition-all hover:bg-white/5';
+            } else {
+                loginForm.classList.add('hidden');
+                signupForm.classList.remove('hidden');
+                signupTab.className = 'flex-1 py-2.5 rounded-lg bg-emerald-600 text-white font-semibold text-sm transition-all shadow-md';
+                loginTab.className = 'flex-1 py-2.5 rounded-lg text-white/60 font-semibold text-sm hover:text-white transition-all hover:bg-white/5';
+            }
+        }
+
+        async function handleLogin() {
+            const email = document.getElementById('login-email').value.trim();
+            const password = document.getElementById('login-password').value;
+            const errorBox = document.getElementById('auth-error');
+
+            if (!email || !password) {
+                errorBox.innerText = "Please enter both email and password.";
+                errorBox.classList.remove('hidden');
+                return;
+            }
+
+            setLoading('btn-login', true);
+
+            // Simulate Backend API Call
+            setTimeout(() => {
+                setLoading('btn-login', false);
+                
+                // Simple validation simulation
+                if (password.length < 4) {
+                    errorBox.innerText = "Invalid password.";
+                    errorBox.classList.remove('hidden');
+                } else {
+                    const username = email.split('@')[0];
+                    // Success
+                    localStorage.setItem('eco_token', 'mock_token_' + Date.now());
+                    localStorage.setItem('eco_user', username);
+                    showToast('Login Successful!', 'success');
+                    enterApp(username);
+                }
+            }, 1200);
+        }
+
+        async function handleSignup() {
+            const name = document.getElementById('signup-name').value.trim();
+            const email = document.getElementById('signup-email').value.trim();
+            const password = document.getElementById('signup-password').value;
+            const errorBox = document.getElementById('auth-error');
+
+            if (!name || !email || !password) {
+                errorBox.innerText = "All fields are required.";
+                errorBox.classList.remove('hidden');
+                return;
+            }
+
+            setLoading('btn-signup', true);
+
+            setTimeout(() => {
+                setLoading('btn-signup', false);
+                localStorage.setItem('eco_token', 'mock_token_' + Date.now());
+                localStorage.setItem('eco_user', name);
+                showToast('Account Created Successfully!', 'success');
+                enterApp(name);
+            }, 1200);
+        }
+
+        function handleLogout() {
+            localStorage.removeItem('eco_token');
+            localStorage.removeItem('eco_user');
+            location.reload();
+        }
+
+        function enterApp(username) {
+            const gate = document.getElementById('auth-gate');
+            const main = document.getElementById('app-main');
+            
+            gate.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
+            gate.style.opacity = '0';
+            gate.style.transform = 'scale(1.1)';
+            
+            setTimeout(() => {
+                gate.style.display = 'none';
+                main.classList.remove('hidden');
+                main.classList.add('animate-fade-in');
+                
+                // Set User Data
+                document.getElementById('display-username').innerText = username.charAt(0).toUpperCase() + username.slice(1);
+                document.getElementById('user-avatar').src = `https://ui-avatars.com/api/?name=${username}&background=10b981&color=fff`;
+                
+                initDashboard();
+            }, 500);
+        }
+
+        // --- DASHBOARD LOGIC ---
+        function initDashboard() {
+            loadStats();
+            loadServices();
+            loadChallenges();
+            loadDataTable();
+            initCharts();
+            startClock();
+            startBackgroundSlideshow();
+            
+            // Initial latency check
+            updateLatency();
+            setInterval(updateLatency, 5000);
+        }
+
+        function loadStats() {
+            const stats = [
+                { title: 'Total Trees', value: '12,847', change: '+23%', color: 'text-emerald-400', icon: 'fa-tree' },
+                { title: 'Waste Collected', value: '45.2T', change: '+18%', color: 'text-blue-400', icon: 'fa-trash-alt' },
+                { title: 'Volunteers', value: '3,421', change: '+12%', color: 'text-purple-400', icon: 'fa-users' },
+                { title: 'Funds Raised', value: 'KES 1.4M', change: '+31%', color: 'text-orange-400', icon: 'fa-hand-holding-usd' }
+            ];
+
+            const grid = document.getElementById('stats-grid');
+            grid.innerHTML = stats.map((stat, i) => `
+                <div class="glass-card p-6 rounded-2xl relative overflow-hidden group">
+                    <div class="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
+                        <i class="fas ${stat.icon} text-6xl text-white"></i>
+                    </div>
+                    <div class="relative z-10">
+                        <div class="flex items-center gap-2 mb-2">
+                            <span class="w-2 h-2 rounded-full bg-${stat.color.split('-')[1]}-400 animate-pulse"></span>
+                            <span class="${stat.color} text-xs font-bold uppercase tracking-wider">Live Data</span>
+                        </div>
+                        <h3 class="text-3xl font-bold mb-1 text-white">${stat.value}</h3>
+                        <p class="text-white/50 text-sm font-medium">${stat.title}</p>
+                        <div class="mt-4 flex items-center text-xs font-semibold text-emerald-400 bg-emerald-500/10 w-max px-2 py-1 rounded">
+                            <i class="fas fa-arrow-up mr-1"></i> ${stat.change}
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function loadServices() {
+            const services = [
+                { name: 'Reforestation & Tree Planting Programs', category: 'Restoration' },
+                { name: 'Urban Waste Management Training', category: 'Education' },
+                { name: 'River Cleaning & Restoration', category: 'Water' },
+                { name: 'Corporate Sustainability Auditing', category: 'Business' },
+                { name: 'Community Solar Grid Installation', category: 'Energy' }
+            ];
+
+            const list = document.getElementById('services-list');
+            list.innerHTML = services.map((s, i) => `
+                <li class="flex items-center gap-4 p-3 bg-white/5 rounded-lg hover:bg-white/10 transition-all cursor-pointer group border-l-2 border-transparent hover:border-emerald-400">
+                    <span class="w-6 h-6 rounded-full bg-emerald-500/20 text-emerald-400 flex items-center justify-center text-xs font-bold">${i + 1}</span>
+                    <div class="flex-1">
+                        <h4 class="font-semibold text-sm text-white/90 group-hover:text-emerald-400 transition-colors">${s.name}</h4>
+                    </div>
+                    <span class="text-[10px] uppercase tracking-wider text-white/30 bg-black/30 px-2 py-1 rounded">${s.category}</span>
+                </li>
+            `).join('');
+        }
+
+        function loadChallenges() {
+            const challenges = [
+                { challenge: 'Plastic pollution in Nairobi River', severity: 'critical' },
+                { challenge: 'Deforestation in Karura Forest edges', severity: 'high' },
+                { challenge: 'E-waste accumulation in industrial zones', severity: 'medium' },
+                { challenge: 'Urban heat islands in CBD', severity: 'medium' }
+            ];
+
+            const severityColors = {
+                low: 'text-blue-400 bg-blue-500/10',
+                medium: 'text-orange-400 bg-orange-500/10',
+                high: 'text-red-400 bg-red-500/10',
+                critical: 'text-red-500 bg-red-500/20 animate-pulse'
+            };
+
+            const list = document.getElementById('challenges-list');
+            list.innerHTML = challenges.map(c => `
+                <li class="p-4 bg-white/5 rounded-xl hover:bg-white/10 transition-all border border-white/5">
+                    <div class="flex justify-between items-start mb-2">
+                        <h4 class="font-semibold text-sm text-white/90">${c.challenge}</h4>
+                        <span class="text-[10px] uppercase font-bold px-2 py-0.5 rounded ${severityColors[c.severity]}">${c.severity}</span>
+                    </div>
+                </li>
+            `).join('');
+        }
+
+        function loadDataTable() {
+            const events = [
+                { id: 'EVT-001', activity: 'River Cleanup', location: 'Nairobi River', impact: '450kg waste', status: 'Completed', percent: 100 },
+                { id: 'EVT-002', activity: 'Tree Planting', location: 'Karura Forest', impact: '1,200 trees', status: 'In Progress', percent: 65 },
+                { id: 'EVT-003', activity: 'Recycling Drive', location: 'Kibera Hub', impact: '890kg plastic', status: 'Active', percent: 82 },
+                { id: 'EVT-004', activity: 'Solar Install', location: 'Mathare', impact: '50kWh capacity', status: 'Planning', percent: 15 },
+                { id: 'EVT-005', activity: 'Beach Cleanup', location: 'Mombasa', impact: '2.3T waste', status: 'Completed', percent: 100 }
+            ];
+
+            const statusStyles = {
+                'Completed': 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/20',
+                'In Progress': 'bg-blue-500/20 text-blue-400 border border-blue-500/20',
+                'Active': 'bg-purple-500/20 text-purple-400 border border-purple-500/20',
+                'Planning': 'bg-yellow-500/20 text-yellow-400 border border-yellow-500/20'
+            };
+
+            const tbody = document.getElementById('data-table');
+            tbody.innerHTML = events.map(e => `
+                <tr class="hover:bg-white/5 transition-colors group">
+                    <td class="p-4 font-mono text-xs text-white/50 group-hover:text-emerald-400 transition-colors">${e.id}</td>
+                    <td class="p-4 font-medium text-white">${e.activity}</td>
+                    <td class="p-4 text-white/70 text-sm">${e.location}</td>
+                    <td class="p-4 font-semibold text-sm">${e.impact}</td>
+                    <td class="p-4"><span class="text-[10px] uppercase font-bold px-2 py-1 rounded ${statusStyles[e.status]}">${e.status}</span></td>
+                    <td class="p-4 w-32">
+                        <div class="w-full bg-white/10 rounded-full h-1.5 overflow-hidden">
+                            <div class="bg-emerald-500 h-full rounded-full transition-all duration-1000" style="width: ${e.percent}%"></div>
+                        </div>
+                        <span class="text-[10px] text-white/40 ml-1">${e.percent}%</span>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        function refreshData() {
+            const icon = event.currentTarget.querySelector('i');
+            icon.classList.add('fa-spin');
+            
+            setTimeout(() => {
+                icon.classList.remove('fa-spin');
+                // Randomize data slightly for effect
+                showToast('Database synchronized successfully.', 'success');
+            }, 1000);
+        }
+
+        // --- CHART.JS CONFIG ---
+        function initCharts() {
+            Chart.defaults.color = '#94a3b8';
+            Chart.defaults.font.family = 'Poppins';
+
+            // Bar Chart
+            const ctx1 = document.getElementById('chart-bar').getContext('2d');
+            AppState.charts.bar = new Chart(ctx1, {
+                type: 'bar',
+                data: {
+                    labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
+                    datasets: [{
+                        label: 'Waste (kg)',
+                        data: [3200, 4500, 5100, 4800, 6200, 7450],
+                        backgroundColor: '#10b981',
+                        borderRadius: 4
+                    }, {
+                        label: 'Trees',
+                        data: [120, 340, 560, 890, 1200, 1540],
+                        backgroundColor: '#3b82f6',
+                        borderRadius: 4
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: { legend: { position: 'bottom', labels: { padding: 20 } } },
+                    scales: {
+                        y: { grid: { color: 'rgba(255,255,255,0.05)' } },
+                        x: { grid: { display: false } }
+                    }
+                }
+            });
+
+            // Doughnut Chart
+            const ctx2 = document.getElementById('chart-doughnut').getContext('2d');
+            AppState.charts.doughnut = new Chart(ctx2, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Plastic', 'Organic', 'Metal', 'Glass', 'E-Waste'],
+                    datasets: [{
+                        data: [45, 25, 15, 10, 5],
+                        backgroundColor: ['#10b981', '#3b82f6', '#f59e0b', '#ec4899', '#6366f1'],
+                        borderWidth: 0,
+                        hoverOffset: 10
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: { legend: { position: 'right', labels: { padding: 20 } } },
+                    cutout: '70%'
+                }
+            });
+        }
+
+        function updateChart(period) {
+            // Simulate data update
+            const buttons = document.querySelectorAll('.chart-toggle');
+            buttons.forEach(b => {
+                b.classList.remove('bg-emerald-600', 'text-white', 'shadow');
+                b.classList.add('text-white/50');
+            });
+            event.currentTarget.classList.remove('text-white/50');
+            event.currentTarget.classList.add('bg-emerald-600', 'text-white', 'shadow');
+
+            const multiplier = period === 'weekly' ? 1 : period === 'monthly' ? 4 : 12;
+            
+            // Update Bar Chart Data
+            AppState.charts.bar.data.datasets[0].data = AppState.charts.bar.data.datasets[0].data.map(v => v * (0.8 + Math.random() * 0.4));
+            AppState.charts.bar.data.datasets[1].data = AppState.charts.bar.data.datasets[1].data.map(v => v * (0.8 + Math.random() * 0.4));
+            AppState.charts.bar.update();
+        }
+
+        // --- M-PESA LOGIC ---
+        function openMpesaModal() {
+            document.getElementById('mpesa-modal').classList.add('active');
+            resetMpesaForm();
+        }
+
+        function closeMpesaModal() {
+            document.getElementById('mpesa-modal').classList.remove('active');
+        }
+
+        function setDonationAmount(amount) {
+            document.getElementById('donation-amount').value = amount;
+            document.querySelectorAll('.amt-btn').forEach(btn => {
+                btn.classList.remove('bg-emerald-600', 'text-white', 'border-emerald-400');
+                if (btn.innerText.includes(amount) || (amount == 1000 && btn.innerText.includes('1,000'))) {
+                    btn.classList.add('bg-emerald-600', 'text-white', 'border-emerald-400');
+                }
+            });
+        }
+
+        function resetMpesaForm() {
+            document.getElementById('donation-amount').value = '';
+            document.getElementById('donation-phone').value = '';
+            document.getElementById('payment-feedback').classList.add('hidden');
+            document.getElementById('payment-feedback').innerHTML = '';
+        }
+
+        function processMpesaPayment() {
+            const amount = document.getElementById('donation-amount').value;
+            const phone = document.getElementById('donation-phone').value;
+            const feedback = document.getElementById('payment-feedback');
+
+            if (!amount || amount < 10) {
+                showToast('Please enter a valid amount (Min KES 10)', 'error');
+                return;
+            }
+            if (!phone || phone.length !== 9) {
+                showToast('Please enter a valid phone number (e.g., 712345678)', 'error');
+                return;
+            }
+
+            setLoading('btn-donate', true);
+            
+            // Show loading state
+            feedback.classList.remove('hidden');
+            feedback.innerHTML = `
+                <div class="flex flex-col items-center">
+                    <div class="w-10 h-10 border-4 border-emerald-500/30 border-t-emerald-500 rounded-full animate-spin mb-3"></div>
+                    <p class="text-sm text-emerald-300 animate-pulse">Initiating STK Push to +254${phone}...</p>
+                    <p class="text-xs text-white/40 mt-1">Please check your phone</p>
+                </div>
+            `;
+
+            // Simulate API delay
+            setTimeout(() => {
+                setLoading('btn-donate', false);
+                
+                // Simulate random success/fail
+                const success = Math.random() > 0.1; 
+
+                if (success) {
+                    feedback.innerHTML = `
+                        <div class="flex flex-col items-center">
+                            <div class="w-12 h-12 bg-emerald-500/20 rounded-full flex items-center justify-center mb-2">
+                                <i class="fas fa-check text-2xl text-emerald-400"></i>
+                            </div>
+                            <p class="text-white font-bold">Payment Successful!</p>
+                            <p class="text-xs text-white/50 font-mono mt-1">TxID: MPESA${Date.now().toString().slice(-6)}</p>
+                            <p class="text-sm text-emerald-400 mt-2">Amount: KES ${parseInt(amount).toLocaleString()}</p>
+                        </div>
+                    `;
+                    showToast('Donation received! Thank you.', 'success');
+                    
+                    // Update total stats
+                    setTimeout(() => closeMpesaModal(), 2500);
+                } else {
+                    feedback.innerHTML = `
+                        <div class="flex flex-col items-center">
+                            <div class="w-12 h-12 bg-red-500/20 rounded-full flex items-center justify-center mb-2">
+                                <i class="fas fa-times text-2xl text-red-400"></i>
+                            </div>
+                            <p class="text-white font-bold">Payment Failed</p>
+                            <p class="text-xs text-white/50 mt-1">Request cancelled by user or timed out.</p>
+                            <button onclick="resetMpesaForm()" class="mt-3 text-xs text-emerald-400 hover:underline">Try Again</button>
+                        </div>
+                    `;
+                    showToast('Transaction failed or cancelled.', 'error');
+                }
+            }, 3000);
+        }
+
+        function submitContact() {
+            const name = document.getElementById('contact-name').value;
+            const msg = document.getElementById('contact-message').value;
+            
+            if(!name || !msg) {
+                showToast('Please fill in all fields', 'error');
+                return;
+            }
+
+            const btn = event.target;
+            const originalText = btn.innerText;
+            btn.innerText = 'Sending...';
+            
+            setTimeout(() => {
+                btn.innerText = originalText;
+                document.getElementById('contact-reply').classList.remove('hidden');
+                document.getElementById('contact-form').reset();
+                showToast('Message sent successfully', 'success');
+            }, 1500);
+        }
+
+        // --- MISC UTILS ---
+        function startClock() {
+            const update = () => {
+                const now = new Date();
+                document.getElementById('live-clock').innerText = now.toLocaleTimeString('en-GB');
+                document.getElementById('live-date').innerText = now.toLocaleDateString('en-GB', { weekday: 'short', day: 'numeric', month: 'short' });
+            };
+            update();
+            setInterval(update, 1000);
+            
+            // Countdown
+            const target = new Date().getTime() + (15 * 24 * 60 * 60 * 1000); // 15 days from now
+            setInterval(() => {
+                const now = new Date().getTime();
+                const diff = target - now;
+                
+                const d = Math.floor(diff / (1000 * 60 * 60 * 24));
+                const h = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                const m = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+                const s = Math.floor((diff % (1000 * 60)) / 1000);
+                
+                document.getElementById('countdown').innerText = 
+                    `${d.toString().padStart(2,'0')}d ${h.toString().padStart(2,'0')}h ${m.toString().padStart(2,'0')}m ${s.toString().padStart(2,'0')}s`;
+            }, 1000);
+        }
+
+        function startBackgroundSlideshow() {
+            const slides = document.querySelectorAll('.bg-slide');
+            let current = 0;
+            
+            setInterval(() => {
+                slides[current].classList.remove('active');
+                current = (current + 1) % slides.length;
+                slides[current].classList.add('active');
+            }, 6000);
+        }
+
+        function updateLatency() {
+            const latency = Math.floor(Math.random() * 30) + 15;
+            document.getElementById('db-latency').innerText = `${latency}ms`;
+        }
+
+        function scrollTo(id) {
+            document.getElementById(id).scrollIntoView({ behavior: 'smooth' });
+        }
+
+        // Mobile Menu Toggle
+        document.getElementById('btn-mobile-toggle').addEventListener('click', () => {
+            document.getElementById('mobile-menu').classList.toggle('hidden');
+            document.getElementById('mobile-menu').classList.toggle('flex');
+        });
+
+        // --- INITIALIZATION ---
+        document.addEventListener('DOMContentLoaded', () => {
+            // Check Auth
+            if (AppState.token && localStorage.getItem('eco_user')) {
+                enterApp(localStorage.getItem('eco_user'));
+            }
+        });
+
+    </script>
+</body>
+</html>

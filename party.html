@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hon. Pedeshe George | Harambee Ward 2027</title>
+    <!-- Fonts & Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        :root {
+            --neon-blue: #00f3ff;
+            --neon-green: #39ff14;
+            --glass-bg: rgba(255, 255, 255, 0.1);
+            --text-color: #ffffff;
+            --bg-color: #0f172a;
+        }
+
+        .dark-mode {
+            --bg-color: #ffffff;
+            --text-color: #0f172a;
+            --glass-bg: rgba(15, 23, 42, 0.15);
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            transition: all 0.5s ease;
+            overflow-x: hidden;
+            font-family: 'Inter', sans-serif;
+        }
+
+        /* --- Login Gate with Neon Rays --- */
+        #login-gate {
+            position: fixed;
+            inset: 0;
+            z-index: 9999;
+            background: linear-gradient(45deg, #000, #1e293b);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+
+        /* Neon Ray Animation */
+        .neon-ray {
+            position: absolute;
+            width: 200%;
+            height: 200%;
+            background: conic-gradient(from 0deg, transparent, var(--neon-blue), transparent 20%, var(--neon-green), transparent 40%);
+            animation: rotateRays 10s linear infinite;
+            opacity: 0.3;
+            z-index: -1;
+        }
+
+        @keyframes rotateRays {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        .glass-login {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(25px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            box-shadow: 0 0 30px var(--neon-blue);
+            border-radius: 20px;
+            padding: 3rem;
+            width: 90%;
+            max-width: 450px;
+            text-align: center;
+        }
+
+        /* --- Dynamic Background Slideshow --- */
+        #slideshow-bg {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            z-index: -2;
+            background-size: cover;
+            background-position: center;
+            transition: background-image 1.5s ease-in-out;
+        }
+
+        .overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.6);
+            z-index: -1;
+        }
+
+        /* --- Animated Floating Cards --- */
+        .agenda-card {
+            background: var(--glass-bg);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 20px;
+            border-radius: 15px;
+            animation: float 4s ease-in-out infinite;
+            transition: transform 0.3s ease;
+        }
+
+        .agenda-card:hover {
+            transform: scale(1.05) translateY(-10px);
+            box-shadow: 0 10px 20px var(--neon-green);
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-20px); }
+        }
+
+        /* --- Countdown Clock --- */
+        .countdown-item {
+            background: rgba(0, 0, 0, 0.7);
+            padding: 15px;
+            border-radius: 10px;
+            min-width: 80px;
+            border: 1px solid var(--neon-blue);
+        }
+
+        /* --- Interactive Buttons --- */
+        .btn-neon {
+            background: transparent;
+            border: 2px solid var(--neon-blue);
+            color: var(--neon-blue);
+            padding: 10px 25px;
+            border-radius: 50px;
+            font-weight: bold;
+            transition: 0.3s;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .btn-neon:hover {
+            background: var(--neon-blue);
+            color: #000;
+            box-shadow: 0 0 20px var(--neon-blue);
+        }
+
+        .hidden { display: none !important; }
+    </style>
+</head>
+<body>
+
+    <!-- LOGIN GATE -->
+    <div id="login-gate">
+        <div class="neon-ray"></div>
+        <div class="glass-login">
+            <!-- NEDP Logo Placeholder -->
+            <div class="mb-6 flex justify-center">
+                <div class="w-24 h-24 rounded-full bg-white flex items-center justify-center p-2 shadow-xl">
+                    <img src="data:image/jpeg;base64,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" alt="NEDP LOGO" id="party-logo">
+                </div>
+            </div>
+            <h2 class="text-2xl font-bold text-white mb-2">NEDP Portal</h2>
+            <p class="text-gray-300 mb-6">Hon. George Pedeshe | Harambee Ward</p>
+            
+            <div class="space-y-4">
+                <input type="text" id="voter-name" placeholder="Full Name" class="w-full p-3 rounded bg-white/10 border border-white/20 text-white outline-none focus:border-cyan-400">
+                <input type="password" placeholder="Voter ID / Secret Code" class="w-full p-3 rounded bg-white/10 border border-white/20 text-white outline-none focus:border-cyan-400">
+                <button onclick="unlockSite()" class="btn-neon w-full">Enter Harambee 2027</button>
+            </div>
+            <p class="mt-4 text-sm text-gray-400">Already registered? Log in above. New voters, sign up in the footer later.</p>
+        </div>
+    </div>
+
+    <!-- MAIN CONTENT -->
+    <div id="main-content" class="hidden">
+        <div id="slideshow-bg"></div>
+        <div class="overlay"></div>
+
+        <!-- Navbar -->
+        <nav class="p-6 flex justify-between items-center sticky top-0 z-50 bg-black/30 backdrop-blur-md">
+            <div class="text-xl font-bold">
+                <span class="text-cyan-400">Hon. George</span> Pedeshe
+            </div>
+            <div class="flex items-center gap-6">
+                <a href="#agendas" class="hover:text-cyan-400">Agendas</a>
+                <a href="#iebc" class="hover:text-cyan-400">Register</a>
+                <a href="#contact" class="hover:text-cyan-400">Contact</a>
+                <button onclick="toggleDarkMode()" class="text-2xl">
+                    <i id="theme-icon" class="fas fa-moon text-cyan-400"></i>
+                </button>
+            </div>
+        </nav>
+
+        <!-- Hero Section -->
+        <header class="h-screen flex flex-col justify-center items-center text-center px-4">
+            <h1 class="text-5xl md:text-7xl font-extrabold mb-4 tracking-tighter">
+                HON. GEORGE PEDESHE <br>
+                <span class="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-green-400">FOR HARAMBEE 2027</span>
+            </h1>
+            <p class="text-xl md:text-2xl mb-8 max-w-2xl opacity-80">National Economic Development Party (NEDP) - Empowering our community through transparency and economic growth.</p>
+            
+            <!-- Countdown -->
+            <div class="flex gap-4 mb-10" id="countdown-container">
+                <div class="countdown-item"><span id="days" class="text-3xl block font-bold">00</span>Days</div>
+                <div class="countdown-item"><span id="hours" class="text-3xl block font-bold">00</span>Hrs</div>
+                <div class="countdown-item"><span id="minutes" class="text-3xl block font-bold">00</span>Min</div>
+                <div class="countdown-item"><span id="seconds" class="text-3xl block font-bold">00</span>Sec</div>
+            </div>
+            <button onclick="window.location.href='#iebc'" class="btn-neon">Register to Vote Now</button>
+        </header>
+
+        <!-- Agendas -->
+        <section id="agendas" class="py-20 px-6 max-w-7xl mx-auto">
+            <h2 class="text-4xl font-bold text-center mb-16">Campaign Themes & Agendas</h2>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-10">
+                <div class="agenda-card">
+                    <i class="fas fa-chart-line text-4xl text-cyan-400 mb-4"></i>
+                    <h3 class="text-xl font-bold mb-2">Economic Stimulus</h3>
+                    <p>Supporting local Harambee SMEs with low-interest grants and business training.</p>
+                </div>
+                <div class="agenda-card" style="animation-delay: 1s;">
+                    <i class="fas fa-graduation-cap text-4xl text-green-400 mb-4"></i>
+                    <h3 class="text-xl font-bold mb-2">Youth Education</h3>
+                    <p>Vocational training centers and bursaries for underprivileged students in Harambee.</p>
+                </div>
+                <div class="agenda-card" style="animation-delay: 2s;">
+                    <i class="fas fa-voted text-4xl text-yellow-400 mb-4"></i>
+                    <h3 class="text-xl font-bold mb-2">Voter Awareness</h3>
+                    <p>Ensuring every resident knows their right to vote and how to register with IEBC.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- IEBC Section -->
+        <section id="iebc" class="py-20 bg-white/5 backdrop-blur-lg">
+            <div class="max-w-4xl mx-auto text-center px-6">
+                <img src="https://www.iebc.or.ke/img/logo.png" alt="IEBC Kenya" class="h-24 mx-auto mb-6 bg-white p-2 rounded">
+                <h2 class="text-3xl font-bold mb-4">Voter Registration - IEBC Kenya</h2>
+                <p class="mb-8">Voting is not just a right, it is a duty to our future. Register at your nearest Harambee Ward center today to support Hon. George Pedeshe.</p>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <a href="https://www.iebc.or.ke" target="_blank" class="p-4 border border-cyan-400 rounded hover:bg-cyan-400/20">Check Registration Status</a>
+                    <a href="#" class="p-4 border border-green-400 rounded hover:bg-green-400/20">Nearest Center Locator</a>
+                </div>
+            </div>
+        </section>
+
+        <!-- Contact Section -->
+        <section id="contact" class="py-20 px-6 max-w-5xl mx-auto">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-20">
+                <div>
+                    <h2 class="text-4xl font-bold mb-6">Get In Touch</h2>
+                    <p class="mb-4">Voice your concerns directly to Hon. George Pedeshe's office.</p>
+                    <p class="text-2xl font-bold text-cyan-400 mb-2"><i class="fas fa-phone"></i> +254 723 456 789</p>
+                    <p class="text-lg opacity-70"><i class="fas fa-envelope"></i> pedeshe@harambee2027.ke</p>
+                </div>
+                <div class="space-y-4">
+                    <input type="text" id="contact-name" placeholder="Your Name" class="w-full p-4 rounded bg-white/10 outline-none border border-white/20 focus:border-cyan-400">
+                    <textarea id="contact-msg" rows="4" placeholder="How can Hon. George help you?" class="w-full p-4 rounded bg-white/10 outline-none border border-white/20 focus:border-cyan-400"></textarea>
+                    <button onclick="handleAutoReply()" class="btn-neon w-full">Submit Message</button>
+                    <div id="reply-area" class="hidden p-4 bg-green-500/20 border border-green-500 text-green-400 rounded">
+                        Thank you for reaching out! Hon. George Pedeshe's team has received your message and will respond within 24 hours.
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Footer with Signup Gate -->
+        <footer class="p-10 border-t border-white/10 text-center">
+            <p class="mb-4">NEDP Party - National Economic Development Party</p>
+            <div class="flex justify-center gap-6 mb-6">
+                <i class="fab fa-facebook fa-2x hover:text-cyan-400"></i>
+                <i class="fab fa-twitter fa-2x hover:text-cyan-400"></i>
+                <i class="fab fa-whatsapp fa-2x hover:text-green-400"></i>
+            </div>
+            <p>&copy; 2026 Harambee Ward 2027. Not Registered? <a href="#" onclick="location.reload()" class="text-cyan-400 underline font-bold">Sign Up Now</a></p>
+        </footer>
+    </div>
+
+    <script>
+        // --- Image Database (Simulated) ---
+        const imageDatabase = [
+            "https://images.unsplash.com/photo-1593113598332-cd288d649433?auto=format&fit=crop&w=1920&q=80", // Development
+            "https://images.unsplash.com/photo-1540910419892-f0c74a0e8965?auto=format&fit=crop&w=1920&q=80", // Voting
+            "https://images.unsplash.com/photo-1517048676732-d65bc937f952?auto=format&fit=crop&w=1920&q=80", // Training
+            "https://images.unsplash.com/photo-1529070538774-1843cb3265df?auto=format&fit=crop&w=1920&q=80"  // Kenyans voting
+        ];
+
+        let currentImgIndex = 0;
+
+        // --- Auth & Gate Logic ---
+        function unlockSite() {
+            const name = document.getElementById('voter-name').value;
+            if (name.trim() === "") {
+                alert("Please enter your name to continue");
+                return;
+            }
+            alert("Welcome, " + name + "! Karibu Harambee Ward Portal.");
+            document.getElementById('login-gate').classList.add('hidden');
+            document.getElementById('main-content').classList.remove('hidden');
+            startSlideshow();
+        }
+
+        // --- Slideshow Logic (Every 10s) ---
+        function startSlideshow() {
+            const slideshow = document.getElementById('slideshow-bg');
+            slideshow.style.backgroundImage = `url(${imageDatabase[currentImgIndex]})`;
+            
+            setInterval(() => {
+                currentImgIndex = (currentImgIndex + 1) % imageDatabase.length;
+                slideshow.style.backgroundImage = `url(${imageDatabase[currentImgIndex]})`;
+            }, 10000);
+        }
+
+        // --- Countdown Logic (Aug 10, 2027) ---
+        function updateCountdown() {
+            const target = new Date("August 10, 2027 00:00:00").getTime();
+            const now = new Date().getTime();
+            const diff = target - now;
+
+            const d = Math.floor(diff / (1000 * 60 * 60 * 24));
+            const h = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            const m = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+            const s = Math.floor((diff % (1000 * 60)) / 1000);
+
+            document.getElementById('days').innerText = d;
+            document.getElementById('hours').innerText = h;
+            document.getElementById('minutes').innerText = m;
+            document.getElementById('seconds').innerText = s;
+        }
+        setInterval(updateCountdown, 1000);
+
+        // --- Dark Mode Logic ---
+        function toggleDarkMode() {
+            document.body.classList.toggle('dark-mode');
+            const isDark = document.body.classList.contains('dark-mode');
+            localStorage.setItem('theme', isDark ? 'light' : 'dark');
+            document.getElementById('theme-icon').className = isDark ? 'fas fa-sun text-yellow-400' : 'fas fa-moon text-cyan-400';
+        }
+
+        // --- Auto Reply Logic ---
+        function handleAutoReply() {
+            const msg = document.getElementById('contact-msg').value;
+            if (!msg) return;
+            document.getElementById('reply-area').classList.remove('hidden');
+            document.getElementById('contact-msg').value = "";
+            document.getElementById('contact-name').value = "";
+        }
+
+        // --- Load User Preference ---
+        window.onload = () => {
+            const savedTheme = localStorage.getItem('theme');
+            if (savedTheme === 'light') {
+                toggleDarkMode();
+            }
+            updateCountdown();
+        };
+    </script>
+</body>
+</html>

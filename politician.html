@@ -1,0 +1,412 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hon. Pedeshe George | Harambee Ward 2027</title>
+    <!-- Tailwind & Font Awesome -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Inter:wght@300;500;800&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --neon-cyan: #00f3ff;
+            --neon-green: #39ff14;
+            --glass: rgba(255, 255, 255, 0.1);
+            --bg-dark: #020617;
+            --text-main: #f8fafc;
+        }
+
+        .dark-mode {
+            --bg-dark: #f8fafc;
+            --text-main: #020617;
+            --glass: rgba(15, 23, 42, 0.1);
+        }
+
+        body {
+            background-color: var(--bg-dark);
+            color: var(--text-main);
+            font-family: 'Inter', sans-serif;
+            transition: background 0.5s ease;
+            overflow-x: hidden;
+        }
+
+        h1, h2, .clock-font { font-family: 'Orbitron', sans-serif; }
+
+        /* --- THE NEON GATE --- */
+        #gate-overlay {
+            position: fixed;
+            inset: 0;
+            z-index: 9999;
+            background: #000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: opacity 0.8s ease, visibility 0.8s;
+        }
+
+        .neon-rays {
+            position: absolute;
+            width: 150%;
+            height: 150%;
+            background: conic-gradient(from 0deg, transparent, var(--neon-cyan), transparent 20%, var(--neon-green), transparent 50%);
+            animation: rotateRays 8s linear infinite;
+            opacity: 0.2;
+        }
+
+        @keyframes rotateRays {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        .gate-card {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(25px);
+            border: 1px solid var(--neon-cyan);
+            box-shadow: 0 0 40px rgba(0, 243, 255, 0.2);
+            padding: 40px;
+            width: 95%;
+            max-width: 450px;
+            border-radius: 24px;
+            z-index: 10;
+        }
+
+        /* --- FLOATING & GLASSY EFFECTS --- */
+        .floating-card {
+            background: var(--glass);
+            backdrop-filter: blur(15px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            animation: float 6s ease-in-out infinite;
+            transition: 0.4s;
+        }
+        .floating-card:hover {
+            transform: translateY(-15px) scale(1.02);
+            border-color: var(--neon-cyan);
+            box-shadow: 0 20px 40px rgba(0, 243, 255, 0.2);
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-20px); }
+        }
+
+        .glass-gallery {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border-radius: 30px;
+            padding: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        /* --- BACKGROUND SLIDESHOW --- */
+        #slideshow-bg {
+            position: fixed;
+            inset: 0;
+            z-index: -2;
+            background-size: cover;
+            background-position: center;
+            transition: 1.5s ease-in-out;
+        }
+
+        .btn-action {
+            background: transparent;
+            border: 2px solid var(--neon-cyan);
+            color: var(--neon-cyan);
+            padding: 12px 24px;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            transition: 0.3s;
+            position: relative;
+            overflow: hidden;
+        }
+        .btn-action:hover {
+            background: var(--neon-cyan);
+            color: #000;
+            box-shadow: 0 0 20px var(--neon-cyan);
+        }
+
+        .hidden-gate {
+            opacity: 0;
+            visibility: hidden;
+            pointer-events: none;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- 1. GATEWAY (LOGIN/SIGNUP) -->
+    <div id="gate-overlay">
+        <div class="neon-rays"></div>
+        <div class="gate-card text-center">
+            <div class="mb-6 flex justify-center">
+                <div class="p-3 bg-white rounded-full shadow-lg">
+                    <img src="https://via.placeholder.com/80?text=NEDP" alt="NEDP Logo" class="rounded-full">
+                </div>
+            </div>
+            <h2 class="text-2xl font-bold mb-2 tracking-widest">HARAMBEE WARD PORTAL</h2>
+            <p class="text-cyan-400 text-xs mb-8 uppercase">Hon. Pedeshe George - 2027 Campaign</p>
+            
+            <div class="space-y-4 text-left">
+                <div>
+                    <label class="text-[10px] ml-2 opacity-60">REGISTERED VOTER NAME</label>
+                    <input type="text" id="voterName" placeholder="Full Name" class="w-full bg-white/10 border border-white/20 p-4 rounded-xl outline-none focus:border-cyan-400 transition">
+                </div>
+                <div>
+                    <label class="text-[10px] ml-2 opacity-60">MEMBERSHIP PIN / ID</label>
+                    <input type="password" id="voterPin" placeholder="••••••" class="w-full bg-white/10 border border-white/20 p-4 rounded-xl outline-none focus:border-cyan-400 transition">
+                </div>
+                <button onclick="unlockPortal()" class="btn-action w-full mt-4 rounded-xl">Verify & Enter Site</button>
+            </div>
+            
+            <p class="mt-6 text-xs opacity-50">By entering, you agree to receive voter education materials for Harambee Ward.</p>
+        </div>
+    </div>
+
+    <!-- 2. MAIN WEBSITE -->
+    <div id="main-site" class="opacity-0 transition-opacity duration-1000">
+        <div id="slideshow-bg"></div>
+        <div class="fixed inset-0 bg-black/60 -z-10"></div>
+
+        <!-- Navigation -->
+        <nav class="flex justify-between items-center px-10 py-6 sticky top-0 z-50 backdrop-blur-xl border-b border-white/10">
+            <div class="text-2xl font-black italic">
+                HON. <span class="text-cyan-400">PEDESHE</span>
+            </div>
+            <div class="hidden md:flex space-x-10 text-sm font-bold uppercase tracking-widest">
+                <a href="#agendas" class="hover:text-cyan-400">Agendas</a>
+                <a href="#gallery" class="hover:text-cyan-400">Gallery</a>
+                <a href="#iebc" class="hover:text-cyan-400">IEBC Info</a>
+                <a href="#contact" class="hover:text-cyan-400">Contact</a>
+            </div>
+            <button onclick="toggleTheme()" class="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center">
+                <i id="theme-icon" class="fas fa-moon text-cyan-400"></i>
+            </button>
+        </nav>
+
+        <!-- Hero Section -->
+        <header class="min-h-screen flex flex-col justify-center items-center text-center px-6">
+            <h1 class="text-6xl md:text-8xl font-black mb-4">HARAMBEE <span class="text-cyan-400">2027</span></h1>
+            <p class="text-xl md:text-2xl opacity-80 max-w-3xl mb-12 uppercase tracking-widest font-light">
+                Economic Empowerment & Community Integrity
+            </p>
+
+            <!-- Real-Time Clock Countdown -->
+            <div class="flex space-x-4 md:space-x-10 mb-16">
+                <div class="text-center">
+                    <span id="days" class="clock-font text-4xl md:text-6xl font-bold text-cyan-400">00</span>
+                    <p class="text-[10px] opacity-60">DAYS</p>
+                </div>
+                <div class="text-center">
+                    <span id="hours" class="clock-font text-4xl md:text-6xl font-bold text-cyan-400">00</span>
+                    <p class="text-[10px] opacity-60">HOURS</p>
+                </div>
+                <div class="text-center">
+                    <span id="mins" class="clock-font text-4xl md:text-6xl font-bold text-cyan-400">00</span>
+                    <p class="text-[10px] opacity-60">MINUTES</p>
+                </div>
+                <div class="text-center">
+                    <span id="secs" class="clock-font text-4xl md:text-6xl font-bold text-cyan-400">00</span>
+                    <p class="text-[10px] opacity-60">SECONDS</p>
+                </div>
+            </div>
+
+            <a href="#iebc" class="btn-action rounded-full px-12">Register to Vote Today</a>
+        </header>
+
+        <!-- Agendas Grid -->
+        <section id="agendas" class="py-24 px-10 max-w-7xl mx-auto">
+            <h2 class="text-4xl font-bold mb-16 text-center">CAMPAIGN PILLARS</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+                <div class="floating-card p-8 rounded-3xl">
+                    <i class="fas fa-seedling text-3xl text-green-400 mb-6"></i>
+                    <h3 class="text-xl font-bold mb-4">Youth Grids</h3>
+                    <p class="text-sm opacity-70">Creating digital hubs in Harambee Ward for remote work and tech training.</p>
+                </div>
+                <div class="floating-card p-8 rounded-3xl" style="animation-delay: 1s">
+                    <i class="fas fa-shield-alt text-3xl text-blue-400 mb-6"></i>
+                    <h3 class="text-xl font-bold mb-4">Secure Ward</h3>
+                    <p class="text-sm opacity-70">Enhancing street lighting and community policing for a 24-hour economy.</p>
+                </div>
+                <div class="floating-card p-8 rounded-3xl" style="animation-delay: 2s">
+                    <i class="fas fa-water text-3xl text-cyan-400 mb-6"></i>
+                    <h3 class="text-xl font-bold mb-4">Clean Water</h3>
+                    <p class="text-sm opacity-70">Automated water kiosks for affordable and consistent supply to residents.</p>
+                </div>
+                <div class="floating-card p-8 rounded-3xl" style="animation-delay: 3s">
+                    <i class="fas fa-university text-3xl text-purple-400 mb-6"></i>
+                    <h3 class="text-xl font-bold mb-4">Bursary Reform</h3>
+                    <p class="text-sm opacity-70">Transparent digital application for bursaries based on merit and need.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Glassy Gallery -->
+        <section id="gallery" class="py-24 px-10">
+            <div class="glass-gallery max-w-6xl mx-auto">
+                <h2 class="text-3xl font-bold mb-10 text-center">COMMUNITY ACTION GALLERY</h2>
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                    <div class="h-64 rounded-2xl overflow-hidden shadow-2xl transition-transform hover:scale-105">
+                        <img src="https://images.unsplash.com/photo-1540910419892-f0c74a0e8965?auto=format&fit=crop&w=800&q=80" class="w-full h-full object-cover">
+                    </div>
+                    <div class="h-64 rounded-2xl overflow-hidden shadow-2xl transition-transform hover:scale-105 mt-8">
+                        <img src="https://images.unsplash.com/photo-1529070538774-1843cb3265df?auto=format&fit=crop&w=800&q=80" class="w-full h-full object-cover">
+                    </div>
+                    <div class="h-64 rounded-2xl overflow-hidden shadow-2xl transition-transform hover:scale-105">
+                        <img src="https://images.unsplash.com/photo-1593113598332-cd288d649433?auto=format&fit=crop&w=800&q=80" class="w-full h-full object-cover">
+                    </div>
+                    <div class="h-64 rounded-2xl overflow-hidden shadow-2xl transition-transform hover:scale-105 mt-8">
+                        <img src="https://images.unsplash.com/photo-1517048676732-d65bc937f952?auto=format&fit=crop&w=800&q=80" class="w-full h-full object-cover">
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- IEBC Info -->
+        <section id="iebc" class="py-24 px-10 text-center">
+            <div class="max-w-4xl mx-auto bg-white/5 p-12 rounded-[40px] border border-green-500/30">
+                <img src="https://www.iebc.or.ke/img/logo.png" class="h-20 mx-auto mb-8 bg-white p-2 rounded-lg">
+                <h2 class="text-3xl font-bold mb-4">VOTER EDUCATION</h2>
+                <p class="text-lg opacity-80 mb-8">
+                    Registration is currently open for the 2027 General Election. 
+                    Knowing your registration status is the first step toward change.
+                </p>
+                <div class="flex flex-col md:flex-row justify-center gap-6">
+                    <a href="https://www.iebc.or.ke" target="_blank" class="px-10 py-4 bg-green-600 rounded-full font-bold">Verify Registration</a>
+                    <button class="px-10 py-4 bg-white/10 rounded-full font-bold">Harambee Centers Map</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- Contact -->
+        <section id="contact" class="py-24 px-10 max-w-6xl mx-auto">
+            <div class="grid md:grid-cols-2 gap-20 items-center">
+                <div>
+                    <h2 class="text-5xl font-black mb-6">REACH OUT</h2>
+                    <p class="text-xl opacity-60 mb-10">Voice your issues directly to Hon. Pedeshe George’s office.</p>
+                    <p class="text-2xl font-bold text-cyan-400 mb-2"><i class="fas fa-phone mr-4"></i> +254 723 456 789</p>
+                    <p class="opacity-70"><i class="fas fa-map-marker-alt mr-4"></i> Harambee Ward Office, Nairobi</p>
+                </div>
+                <div class="bg-white/5 p-8 rounded-3xl border border-white/10">
+                    <input type="text" id="sender-name" placeholder="Full Name" class="w-full bg-white/5 border border-white/10 p-4 rounded-xl mb-4 outline-none focus:border-cyan-400">
+                    <textarea id="sender-msg" rows="4" placeholder="Your Message..." class="w-full bg-white/5 border border-white/10 p-4 rounded-xl mb-4 outline-none focus:border-cyan-400"></textarea>
+                    <button onclick="handleReply()" class="btn-action w-full rounded-xl">Send Message</button>
+                    <div id="reply-note" class="hidden mt-4 p-4 bg-green-500/20 text-green-400 rounded-xl text-sm">
+                        <i class="fas fa-check-circle mr-2"></i> Message delivered. Hon. George's team will contact you.
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Footer -->
+        <footer class="py-12 px-10 border-t border-white/10 text-center">
+            <p class="font-bold opacity-40 uppercase tracking-[10px]">NEDP PARTY</p>
+            <div class="mt-8 flex justify-center space-x-6 text-2xl">
+                <i class="fab fa-facebook hover:text-cyan-400 cursor-pointer"></i>
+                <i class="fab fa-twitter hover:text-cyan-400 cursor-pointer"></i>
+                <i class="fab fa-whatsapp hover:text-green-400 cursor-pointer"></i>
+            </div>
+            <p class="mt-8 text-xs opacity-40">Not registered? <a href="#" onclick="location.reload()" class="underline text-cyan-400">Sign Up at the Gate</a></p>
+        </footer>
+    </div>
+
+    <script>
+        // --- IMAGE DATABASE ---
+        const imageDB = [
+            'https://images.unsplash.com/photo-1540910419892-f0c74a0e8965?auto=format&fit=crop&w=1920&q=80',
+            'https://images.unsplash.com/photo-1529070538774-1843cb3265df?auto=format&fit=crop&w=1920&q=80',
+            'https://images.unsplash.com/photo-1593113598332-cd288d649433?auto=format&fit=crop&w=1920&q=80',
+            'https://images.unsplash.com/photo-1517048676732-d65bc937f952?auto=format&fit=crop&w=1920&q=80'
+        ];
+
+        // --- AUTH LOGIC (THE FIX) ---
+        function unlockPortal() {
+            const name = document.getElementById('voterName').value;
+            const pin = document.getElementById('voterPin').value;
+
+            if (name.trim() === "" || pin.trim() === "") {
+                alert("Credentials Required: Please enter your name and PIN.");
+                return;
+            }
+
+            // Persistence
+            localStorage.setItem('harambee_voter', name);
+            localStorage.setItem('portal_access', 'true');
+
+            // Visual Transition
+            document.getElementById('gate-overlay').classList.add('hidden-gate');
+            document.getElementById('main-site').classList.remove('opacity-0');
+            
+            initSystem();
+        }
+
+        // --- THEME LOGIC ---
+        function toggleTheme() {
+            document.body.classList.toggle('dark-mode');
+            const isDark = !document.body.classList.contains('dark-mode');
+            localStorage.setItem('user_theme', isDark ? 'dark' : 'light');
+            document.getElementById('theme-icon').className = isDark ? 'fas fa-moon text-cyan-400' : 'fas fa-sun text-yellow-500';
+        }
+
+        // --- BACKGROUND SLIDESHOW ---
+        let currentImg = 0;
+        function cycleBackground() {
+            const bg = document.getElementById('slideshow-bg');
+            if (bg) {
+                bg.style.backgroundImage = `url('${imageDB[currentImg]}')`;
+                currentImg = (currentImg + 1) % imageDB.length;
+                localStorage.setItem('saved_bg', currentImg);
+            }
+        }
+
+        // --- COUNTDOWN CLOCK ---
+        function runCountdown() {
+            const target = new Date("August 10, 2027 00:00:00").getTime();
+            const now = new Date().getTime();
+            const diff = target - now;
+
+            const d = Math.floor(diff / (1000 * 60 * 60 * 24));
+            const h = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            const m = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+            const s = Math.floor((diff % (1000 * 60)) / 1000);
+
+            document.getElementById('days').innerText = d;
+            document.getElementById('hours').innerText = h;
+            document.getElementById('mins').innerText = m;
+            document.getElementById('secs').innerText = s;
+        }
+
+        // --- CONTACT REPLY ---
+        function handleReply() {
+            const note = document.getElementById('reply-note');
+            note.classList.remove('hidden');
+            document.getElementById('sender-name').value = "";
+            document.getElementById('sender-msg').value = "";
+            setTimeout(() => note.classList.add('hidden'), 5000);
+        }
+
+        // --- INITIALIZATION ---
+        function initSystem() {
+            cycleBackground();
+            setInterval(cycleBackground, 10000);
+            setInterval(runCountdown, 1000);
+            runCountdown();
+        }
+
+        window.onload = () => {
+            // Check if already logged in
+            if (localStorage.getItem('portal_access') === 'true') {
+                document.getElementById('gate-overlay').classList.add('hidden-gate');
+                document.getElementById('main-site').classList.remove('opacity-0');
+                initSystem();
+            }
+
+            // Restore Preferences
+            if (localStorage.getItem('user_theme') === 'light') toggleTheme();
+            const savedBg = localStorage.getItem('saved_bg');
+            if (savedBg) currentImg = parseInt(savedBg);
+        };
+    </script>
+</body>
+</html>

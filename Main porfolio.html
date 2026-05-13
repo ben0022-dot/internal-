@@ -762,7 +762,7 @@
         }
     </style>
 </head>
-<body>
+<>
     <!-- Loader -->
     <div class="loader" id="loader">
         <div class="loader-circle"></div>
@@ -780,7 +780,7 @@
     <div class="particles" id="particles"></div>
 
     <!-- Navigation -->
-    <nav>
+    <div>
         <div class="logo">&lt;Benedict/&gt;</div>
         <ul class="nav-links">
             <li><a href="#home">Home</a></li>
@@ -789,8 +789,10 @@
             <li><a href="#certifications">Certifications</a></li>
             <li><a href="#languages">Languages</a></li>
             <li><a href="#contact">Contact</a></li>
-        </ul>
+        </ul> </div>
+         <a href="#cv" class="btn btn-primary nav-cta">Download CV</a>
     </nav>
+</header>
 
     <!-- Hero Section -->
     <section class="hero" id="home">
@@ -803,6 +805,8 @@
             <div class="cta-buttons">
                 <a href="#skills" class="btn btn-primary">View My Work</a>
                 <a href="#contact" class="btn btn-secondary">Get In Touch</a>
+                 <a href="#cv" class="btn btn-ghost">Download CV</a>
+            
             </div>
         </div>
     </section>
@@ -1155,6 +1159,7 @@
             // For demo purposes, we'll show a custom modal or navigate to anchor
             console.log(details[skill]);
         }
+            console.log(detail[cv]);
 
         // Parallax effect on scroll
         window.addEventListener('scroll', () => {

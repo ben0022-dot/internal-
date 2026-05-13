@@ -1,0 +1,1813 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hon. Pedeshe George | Harambee Ward 2027 | NEDP</title>
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700;800&family=Orbitron:wght@400;700;900&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --primary: #d4af37;
+            --secondary: #1a1a2e;
+            --accent: #e94560;
+            --neon-gold: #ffd700;
+            --neon-blue: #00f3ff;
+            --neon-red: #ff0040;
+            --glass-bg: rgba(255, 255, 255, 0.05);
+            --glass-border: rgba(255, 255, 255, 0.1);
+        }
+
+        [data-theme="dark"] {
+            --bg-primary: #0a0a0a;
+            --bg-secondary: #1a1a1a;
+            --text-primary: #ffffff;
+            --text-secondary: #a0a0a0;
+            --card-bg: rgba(0, 0, 0, 0.6);
+        }
+
+        [data-theme="light"] {
+            --bg-primary: #f5f5f5;
+            --bg-secondary: #ffffff;
+            --text-primary: #1a1a2e;
+            --text-secondary: #666666;
+            --card-bg: rgba(255, 255, 255, 0.9);
+        }
+
+        * {
+            font-family: 'Poppins', sans-serif;
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            transition: background 0.3s, color 0.3s;
+            overflow-x: hidden;
+        }
+
+        .neon-rays {
+            position: absolute;
+            inset: 0;
+            overflow: hidden;
+            z-index: 0;
+        }
+
+        .neon-ray {
+            position: absolute;
+            width: 2px;
+            height: 100%;
+            background: linear-gradient(to bottom, transparent, var(--neon-gold), transparent);
+            animation: ray-sweep 4s ease-in-out infinite;
+            opacity: 0.3;
+        }
+
+        @keyframes ray-sweep {
+            0%, 100% { transform: rotate(-15deg) translateX(-100px); opacity: 0; }
+            50% { transform: rotate(-15deg) translateX(100px); opacity: 0.6; }
+        }
+
+        .glass {
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
+            border-radius: 24px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+        }
+
+        .glass-card {
+            background: rgba(212, 175, 55, 0.1);
+            backdrop-filter: blur(16px);
+            border: 1px solid rgba(212, 175, 55, 0.2);
+            border-radius: 20px;
+            transition: all 0.4s ease;
+            cursor: pointer;
+        }
+
+        .glass-card:hover {
+            transform: translateY(-10px) scale(1.02);
+            box-shadow: 0 20px 60px rgba(212, 175, 55, 0.3);
+            border-color: var(--neon-gold);
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-20px); }
+        }
+
+        .animate-float { animation: float 6s ease-in-out infinite; }
+        .animate-float-delayed { animation: float 8s ease-in-out infinite; animation-delay: 2s; }
+        .animate-float-slow { animation: float 10s ease-in-out infinite; animation-delay: 1s; }
+
+        .neon-text {
+            text-shadow: 0 0 10px var(--neon-gold), 0 0 20px var(--neon-gold), 0 0 40px var(--neon-gold);
+        }
+
+        .btn-primary {
+            position: relative;
+            overflow: hidden;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            background: linear-gradient(135deg, var(--primary), #b8941f);
+            border: none;
+            color: white;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(212, 175, 55, 0.4);
+        }
+
+        .btn-primary:active { transform: scale(0.95); }
+
+        .btn-glow {
+            animation: glow-pulse 2s ease-in-out infinite;
+        }
+
+        @keyframes glow-pulse {
+            0%, 100% { box-shadow: 0 0 5px var(--neon-gold); }
+            50% { box-shadow: 0 0 20px var(--neon-gold), 0 0 40px var(--neon-gold); }
+        }
+
+        .countdown-digit {
+            font-family: 'Orbitron', monospace;
+            background: linear-gradient(135deg, rgba(0,0,0,0.8), rgba(212,175,55,0.2));
+            border: 1px solid var(--neon-gold);
+            border-radius: 12px;
+            padding: 15px;
+            min-width: 80px;
+            text-align: center;
+            box-shadow: 0 0 15px rgba(212, 175, 55, 0.3);
+        }
+
+        .theme-toggle {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 1000;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: var(--glass-bg);
+            backdrop-filter: blur(10px);
+            border: 1px solid var(--glass-border);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-size: 1.5rem;
+        }
+
+        .theme-toggle:hover {
+            transform: rotate(180deg);
+            box-shadow: 0 0 20px var(--neon-gold);
+        }
+
+        .bg-slideshow {
+            position: fixed;
+            inset: 0;
+            z-index: -1;
+        }
+
+        .bg-slide {
+            position: absolute;
+            inset: 0;
+            background-size: cover;
+            background-position: center;
+            opacity: 0;
+            transition: opacity 1.5s ease-in-out;
+        }
+
+        .bg-slide.active { opacity: 1; }
+
+        .bg-overlay {
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(135deg, rgba(0,0,0,0.85) 0%, rgba(26,26,46,0.9) 50%, rgba(0,0,0,0.95) 100%);
+        }
+
+        .agenda-card {
+            background: linear-gradient(135deg, rgba(212,175,55,0.1), rgba(233,69,96,0.05));
+            border: 1px solid rgba(212,175,55,0.3);
+            border-radius: 20px;
+            padding: 25px;
+            transition: all 0.4s ease;
+            position: relative;
+            overflow: hidden;
+            cursor: pointer;
+        }
+
+        .agenda-card::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(212,175,55,0.1) 0%, transparent 70%);
+            opacity: 0;
+            transition: opacity 0.4s;
+        }
+
+        .agenda-card:hover::before { opacity: 1; }
+        .agenda-card:hover {
+            transform: translateY(-10px);
+            border-color: var(--neon-gold);
+            box-shadow: 0 20px 40px rgba(212,175,55,0.2);
+        }
+
+        .iebc-badge {
+            background: linear-gradient(135deg, #0066cc, #004499);
+            border: 2px solid #ffd700;
+            border-radius: 16px;
+            padding: 20px;
+            text-align: center;
+            box-shadow: 0 10px 30px rgba(0,102,204,0.3);
+        }
+
+        .contact-input {
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(212,175,55,0.3);
+            color: var(--text-primary);
+            transition: all 0.3s;
+        }
+
+        .contact-input:focus {
+            outline: none;
+            border-color: var(--neon-gold);
+            box-shadow: 0 0 15px rgba(212,175,55,0.3);
+            background: rgba(255,255,255,0.1);
+        }
+
+        .profile-pic {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 4px solid var(--neon-gold);
+            box-shadow: 0 0 30px rgba(212, 175, 55, 0.5);
+            transition: all 0.4s ease;
+        }
+
+        .profile-pic:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 50px rgba(212, 175, 55, 0.8);
+        }
+
+        .profile-pic-gate {
+            width: 180px;
+            height: 180px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 5px solid var(--neon-gold);
+            box-shadow: 0 0 40px rgba(212, 175, 55, 0.6);
+            animation: float 6s ease-in-out infinite;
+        }
+
+        .modal-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.8);
+            backdrop-filter: blur(10px);
+            z-index: 3000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .modal-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .modal-content {
+            background: linear-gradient(135deg, #1a1a2e, #0a0a0a);
+            border: 2px solid var(--neon-gold);
+            border-radius: 24px;
+            padding: 40px;
+            max-width: 600px;
+            width: 90%;
+            max-height: 80vh;
+            overflow-y: auto;
+            transform: scale(0.8);
+            transition: transform 0.3s ease;
+            position: relative;
+        }
+
+        .modal-overlay.active .modal-content { transform: scale(1); }
+
+        .modal-close {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.1);
+            border: 1px solid var(--neon-gold);
+            color: var(--neon-gold);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s;
+        }
+
+        .modal-close:hover {
+            background: var(--neon-gold);
+            color: #000;
+        }
+
+        @media (max-width: 768px) {
+            .countdown-digit { min-width: 60px; padding: 10px; font-size: 1.5rem; }
+            .neon-text { font-size: 2rem !important; }
+            .profile-pic { width: 120px; height: 120px; }
+            .profile-pic-gate { width: 140px; height: 140px; }
+        }
+
+        .spinner {
+            border: 3px solid rgba(255,255,255,0.1);
+            border-top-color: var(--neon-gold);
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin { to { transform: rotate(360deg); } }
+
+        .toast {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            padding: 16px 24px;
+            border-radius: 12px;
+            color: white;
+            font-weight: 600;
+            z-index: 2000;
+            transform: translateX(400px);
+            transition: transform 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+        }
+
+        .toast.show { transform: translateX(0); }
+        .toast-success { background: linear-gradient(135deg, #22c55e, #16a34a); }
+        .toast-error { background: linear-gradient(135deg, #ef4444, #dc2626); }
+        .toast-info { background: linear-gradient(135deg, #3b82f6, #2563eb); }
+
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: var(--bg-secondary); }
+        ::-webkit-scrollbar-thumb { background: var(--primary); border-radius: 4px; }
+
+        html { scroll-behavior: smooth; }
+
+        .nav-link.active {
+            background: rgba(212, 175, 55, 0.2);
+            color: var(--neon-gold);
+        }
+    </style>
+<base target="_blank">
+</head>
+<body data-theme="dark">
+
+    <!-- Theme Toggle -->
+    <button class="theme-toggle" onclick="toggleTheme()" title="Toggle Dark/Light Mode">
+        <i class="fas fa-moon" id="theme-icon"></i>
+    </button>
+
+    <!-- Background Slideshow -->
+    <div class="bg-slideshow" id="bg-slideshow">
+        <div class="bg-slide active" style="background-image: url('https://images.unsplash.com/photo-1541872703-74c5e44368f9?w=1920&q=80');"></div>
+        <div class="bg-slide" style="background-image: url('https://images.unsplash.com/photo-1529107386315-e1a2ed48a620?w=1920&q=80');"></div>
+        <div class="bg-slide" style="background-image: url('https://images.unsplash.com/photo-1577962917302-cd874c4e31d2?w=1920&q=80');"></div>
+        <div class="bg-slide" style="background-image: url('https://images.unsplash.com/photo-1569025743873-ea3a9bc3db9f?w=1920&q=80');"></div>
+        <div class="bg-slide" style="background-image: url('https://images.unsplash.com/photo-1575320181282-9afab399137c?w=1920&q=80');"></div>
+        <div class="bg-slide" style="background-image: url('https://images.unsplash.com/photo-1551836022-d5d88e9218df?w=1920&q=80');"></div>
+        <div class="bg-slide" style="background-image: url('https://images.unsplash.com/photo-1593113598332-cd288d649433?w=1920&q=80');"></div>
+        <div class="bg-slide" style="background-image: url('https://images.unsplash.com/photo-1559027615-cd4628902d4a?w=1920&q=80');"></div>
+    </div>
+    <div class="bg-overlay"></div>
+
+    <!-- Toast Container -->
+    <div id="toast-container"></div>
+
+    <!-- Agenda Detail Modal -->
+    <div id="agenda-modal" class="modal-overlay" onclick="closeAgendaModal(event)">
+        <div class="modal-content" onclick="event.stopPropagation()">
+            <button class="modal-close" onclick="closeAgendaModal()">
+                <i class="fas fa-times"></i>
+            </button>
+            <div id="agenda-modal-content">
+                <!-- Content injected by JS -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Voter Registration Modal -->
+    <div id="voter-modal" class="modal-overlay" onclick="closeVoterModal(event)">
+        <div class="modal-content" onclick="event.stopPropagation()">
+            <button class="modal-close" onclick="closeVoterModal()">
+                <i class="fas fa-times"></i>
+            </button>
+            <div class="text-center mb-6">
+                <i class="fas fa-vote-yea text-5xl text-yellow-400 mb-4"></i>
+                <h2 class="text-2xl font-bold text-yellow-400 mb-2">Register to Vote</h2>
+                <p class="text-white/60">Make your voice count in 2027</p>
+            </div>
+            <div class="space-y-4">
+                <div class="p-4 bg-white/5 rounded-xl">
+                    <h3 class="font-bold text-yellow-400 mb-2"><i class="fas fa-globe mr-2"></i>Online Registration</h3>
+                    <p class="text-sm text-white/70 mb-3">Visit the IEBC portal to register online</p>
+                    <a href="https://www.iebc.or.ke" target="_blank" class="btn-primary w-full py-3 rounded-xl text-center block">
+                        <i class="fas fa-external-link-alt mr-2"></i> Visit IEBC Portal
+                    </a>
+                </div>
+                <div class="p-4 bg-white/5 rounded-xl">
+                    <h3 class="font-bold text-yellow-400 mb-2"><i class="fas fa-mobile-alt mr-2"></i>Via USSD</h3>
+                    <p class="text-sm text-white/70 mb-3">Dial *222# to check your registration status</p>
+                    <button onclick="showToast('Dial *222# on your phone to check voter status', 'info')" class="w-full py-3 rounded-xl border border-yellow-500 text-yellow-400 hover:bg-yellow-500/20 transition-all">
+                        <i class="fas fa-phone mr-2"></i> How to Dial
+                    </button>
+                </div>
+                <div class="p-4 bg-white/5 rounded-xl">
+                    <h3 class="font-bold text-yellow-400 mb-2"><i class="fas fa-map-marker-alt mr-2"></i>In Person</h3>
+                    <p class="text-sm text-white/70">Visit your nearest IEBC constituency office with your ID card</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ========================================== -->
+    <!-- AUTHENTICATION GATE -->
+    <!-- ========================================== -->
+    <div id="auth-gate" class="fixed inset-0 z-[100] flex items-center justify-center">
+
+        <!-- Neon Rays Background -->
+        <div class="neon-rays">
+            <div class="neon-ray" style="left: 20%; animation-delay: 0s;"></div>
+            <div class="neon-ray" style="left: 40%; animation-delay: 0.5s;"></div>
+            <div class="neon-ray" style="left: 60%; animation-delay: 1s;"></div>
+            <div class="neon-ray" style="left: 80%; animation-delay: 1.5s;"></div>
+        </div>
+
+        <!-- Main Gate Content -->
+        <div class="relative z-10 w-full max-w-5xl mx-4 grid md:grid-cols-2 gap-8 items-center">
+
+            <!-- Left Side: Campaign Info -->
+            <div class="text-center md:text-left animate-float">
+                <!-- Profile Picture for Gate -->
+                <div class="mb-6 flex justify-center md:justify-start">
+                    <div class="relative">
+                        <img src="https://images.unsplash.com/photo-1560250097-0b93528c311a?w=400&h=400&fit=crop&crop=face" 
+                             alt="Hon. Pedeshe George" 
+                             class="profile-pic-gate"
+                             id="gate-profile-pic"
+                             onclick="document.getElementById('gate-pic-upload').click()"
+                             style="cursor: pointer;">
+                        <div class="absolute bottom-2 right-2 w-10 h-10 bg-yellow-500 rounded-full flex items-center justify-center cursor-pointer hover:bg-yellow-400 transition-colors"
+                             onclick="document.getElementById('gate-pic-upload').click()">
+                            <i class="fas fa-camera text-black"></i>
+                        </div>
+                        <input type="file" id="gate-pic-upload" accept="image/*" class="hidden" onchange="handleProfilePicUpload(event, 'gate')">
+                    </div>
+                </div>
+
+                <!-- NEDP Logo -->
+                <div class="mb-6 inline-block">
+                    <div class="w-32 h-32 mx-auto md:mx-0 rounded-full bg-gradient-to-br from-yellow-400 via-yellow-600 to-yellow-800 flex items-center justify-center border-4 border-yellow-300 shadow-lg shadow-yellow-500/50">
+                        <div class="text-center">
+                            <div class="text-3xl font-black text-white drop-shadow-lg">NEDP</div>
+                            <div class="text-[8px] text-white font-bold tracking-wider">NATIONAL ECONOMIC<br>DEVELOPMENT PARTY</div>
+                        </div>
+                    </div>
+                </div>
+
+                <h1 class="text-4xl md:text-6xl font-black mb-2 neon-text" style="font-family: 'Orbitron', sans-serif;">
+                    HON. PEDESHE
+                </h1>
+                <h2 class="text-2xl md:text-4xl font-bold text-yellow-400 mb-4">GEORGE</h2>
+
+                <div class="inline-block px-6 py-2 bg-gradient-to-r from-red-600 to-red-800 rounded-full text-white font-bold mb-6 border-2 border-yellow-400 shadow-lg">
+                    <i class="fas fa-vote-yea mr-2"></i> HARAMBEE WARD 2027
+                </div>
+
+                <p class="text-lg text-white/80 mb-6 leading-relaxed">
+                    Your Voice, Your Vote, Your Future. Join the movement for economic development 
+                    and social transformation in Harambee Ward.
+                </p>
+
+                <!-- Countdown Timer -->
+                <div class="mb-6">
+                    <p class="text-sm text-yellow-400 font-semibold mb-3 tracking-wider">ELECTION COUNTDOWN</p>
+                    <div class="flex gap-3 justify-center md:justify-start" id="countdown-timer">
+                        <div class="countdown-digit">
+                            <div class="text-3xl font-bold text-yellow-400" id="cd-days">000</div>
+                            <div class="text-xs text-white/60">DAYS</div>
+                        </div>
+                        <div class="countdown-digit">
+                            <div class="text-3xl font-bold text-yellow-400" id="cd-hours">00</div>
+                            <div class="text-xs text-white/60">HRS</div>
+                        </div>
+                        <div class="countdown-digit">
+                            <div class="text-3xl font-bold text-yellow-400" id="cd-minutes">00</div>
+                            <div class="text-xs text-white/60">MIN</div>
+                        </div>
+                        <div class="countdown-digit">
+                            <div class="text-3xl font-bold text-red-400" id="cd-seconds">00</div>
+                            <div class="text-xs text-white/60">SEC</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- IEBC Badge -->
+                <div class="iebc-badge inline-block">
+                    <i class="fas fa-shield-alt text-3xl text-yellow-400 mb-2"></i>
+                    <div class="text-white font-bold">IEBC REGISTERED</div>
+                    <div class="text-sm text-white/80">Independent Electoral and Boundaries Commission</div>
+                    <button onclick="openVoterModal()" class="inline-block mt-2 px-4 py-1 bg-yellow-500 text-blue-900 rounded-full text-sm font-bold hover:bg-yellow-400 transition-colors">
+                        <i class="fas fa-external-link-alt mr-1"></i> Register as Voter
+                    </button>
+                </div>
+            </div>
+
+            <!-- Right Side: Auth Forms -->
+            <div class="glass p-8 animate-float-delayed relative">
+                <!-- Campaign Slogan Background -->
+                <div class="absolute -top-4 left-1/2 -translate-x-1/2 bg-gradient-to-r from-red-600 to-red-800 px-6 py-2 rounded-full text-white font-bold text-sm whitespace-nowrap shadow-lg border border-yellow-400">
+                    <i class="fas fa-bullhorn mr-2"></i> HON. GEORGE PEDESHE FOR HARAMBEE 2027
+                </div>
+
+                <div class="text-center mb-6 mt-4">
+                    <h3 class="text-2xl font-bold text-yellow-400">Welcome Citizen</h3>
+                    <p class="text-white/60 text-sm">Access the campaign portal</p>
+                </div>
+
+                <!-- Auth Tabs -->
+                <div class="flex mb-6 bg-black/30 rounded-xl p-1">
+                    <button type="button" id="tab-login" onclick="switchAuthTab('login')" 
+                            class="flex-1 py-3 rounded-lg bg-gradient-to-r from-yellow-600 to-yellow-700 text-white font-bold transition-all shadow-md">
+                        <i class="fas fa-sign-in-alt mr-2"></i> Login
+                    </button>
+                    <button type="button" id="tab-signup" onclick="switchAuthTab('signup')" 
+                            class="flex-1 py-3 rounded-lg text-white/70 font-bold hover:text-white transition-all hover:bg-white/10">
+                        <i class="fas fa-user-plus mr-2"></i> Sign Up
+                    </button>
+                </div>
+
+                <!-- Login Form -->
+                <form id="form-login" class="space-y-4" onsubmit="return false;">
+                    <div class="relative">
+                        <i class="fas fa-envelope absolute left-4 top-1/2 -translate-y-1/2 text-yellow-500/50"></i>
+                        <input type="email" id="login-email" placeholder="Email Address" 
+                               class="contact-input w-full pl-12 pr-4 py-3.5 rounded-xl" required>
+                    </div>
+                    <div class="relative">
+                        <i class="fas fa-lock absolute left-4 top-1/2 -translate-y-1/2 text-yellow-500/50"></i>
+                        <input type="password" id="login-password" placeholder="Password" 
+                               class="contact-input w-full pl-12 pr-4 py-3.5 rounded-xl" required>
+                    </div>
+                    <div class="flex items-center justify-between text-sm">
+                        <label class="flex items-center gap-2 text-white/60 cursor-pointer">
+                            <input type="checkbox" class="w-4 h-4 rounded accent-yellow-500">
+                            Remember me
+                        </label>
+                        <a href="#" onclick="showToast('Password reset link sent to your email', 'info')" class="text-yellow-400 hover:underline">Forgot Password?</a>
+                    </div>
+                    <button type="button" id="btn-login" onclick="handleLogin()" 
+                            class="btn-primary w-full py-3.5 rounded-xl font-bold text-lg btn-glow">
+                        <span class="flex items-center justify-center gap-2">
+                            <i class="fas fa-sign-in-alt"></i> Access Portal
+                        </span>
+                    </button>
+                </form>
+
+                <!-- Signup Form -->
+                <form id="form-signup" class="space-y-4 hidden" onsubmit="return false;">
+                    <div class="relative">
+                        <i class="fas fa-user absolute left-4 top-1/2 -translate-y-1/2 text-yellow-500/50"></i>
+                        <input type="text" id="signup-name" placeholder="Full Name" 
+                               class="contact-input w-full pl-12 pr-4 py-3.5 rounded-xl" required>
+                    </div>
+                    <div class="relative">
+                        <i class="fas fa-id-card absolute left-4 top-1/2 -translate-y-1/2 text-yellow-500/50"></i>
+                        <input type="text" id="signup-id" placeholder="National ID Number" 
+                               class="contact-input w-full pl-12 pr-4 py-3.5 rounded-xl" required>
+                    </div>
+                    <div class="relative">
+                        <i class="fas fa-envelope absolute left-4 top-1/2 -translate-y-1/2 text-yellow-500/50"></i>
+                        <input type="email" id="signup-email" placeholder="Email Address" 
+                               class="contact-input w-full pl-12 pr-4 py-3.5 rounded-xl" required>
+                    </div>
+                    <div class="relative">
+                        <i class="fas fa-phone absolute left-4 top-1/2 -translate-y-1/2 text-yellow-500/50"></i>
+                        <input type="tel" id="signup-phone" placeholder="Phone (+254...)" 
+                               class="contact-input w-full pl-12 pr-4 py-3.5 rounded-xl" required>
+                    </div>
+                    <div class="relative">
+                        <i class="fas fa-map-marker-alt absolute left-4 top-1/2 -translate-y-1/2 text-yellow-500/50"></i>
+                        <select id="signup-ward" class="contact-input w-full pl-12 pr-4 py-3.5 rounded-xl">
+                            <option value="">Select Your Polling Station</option>
+                            <option value="harambee">Harambee Ward</option>
+                            <option value="makadara">Makadara</option>
+                            <option value="kamukunji">Kamukunji</option>
+                            <option value="starehe">Starehe</option>
+                        </select>
+                    </div>
+                    <div class="relative">
+                        <i class="fas fa-lock absolute left-4 top-1/2 -translate-y-1/2 text-yellow-500/50"></i>
+                        <input type="password" id="signup-password" placeholder="Create Password" 
+                               class="contact-input w-full pl-12 pr-4 py-3.5 rounded-xl" required>
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <input type="checkbox" id="voter-registered" class="w-4 h-4 rounded accent-yellow-500">
+                        <label for="voter-registered" class="text-sm text-white/70">
+                            I am registered as a voter with IEBC
+                        </label>
+                    </div>
+                    <button type="button" id="btn-signup" onclick="handleSignup()" 
+                            class="btn-primary w-full py-3.5 rounded-xl font-bold text-lg btn-glow">
+                        <span class="flex items-center justify-center gap-2">
+                            <i class="fas fa-user-plus"></i> Join the Movement
+                        </span>
+                    </button>
+                </form>
+
+                <p id="auth-error" class="mt-4 text-red-400 text-sm text-center hidden bg-red-500/10 p-2 rounded-lg"></p>
+
+                <!-- Voter Education Note -->
+                <div class="mt-6 p-4 bg-blue-900/30 rounded-xl border border-blue-500/30">
+                    <div class="flex items-start gap-3">
+                        <i class="fas fa-info-circle text-blue-400 text-xl mt-1"></i>
+                        <div>
+                            <p class="text-sm text-white/80 font-semibold">Not registered to vote?</p>
+                            <p class="text-xs text-white/60 mt-1">
+                                Visit <button onclick="openVoterModal()" class="text-yellow-400 hover:underline font-bold">IEBC Portal</button> or dial 
+                                <span class="text-yellow-400 font-mono">*222#</span> to check your registration status.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Floating Agenda Cards (Gate Level) -->
+        <div class="absolute bottom-8 left-0 right-0 px-4">
+            <div class="max-w-6xl mx-auto">
+                <p class="text-center text-yellow-400 font-bold mb-4 text-sm tracking-wider">OUR KEY AGENDAS</p>
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-4" id="gate-agenda-cards">
+                    <!-- Injected by JS -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ========================================== -->
+    <!-- MAIN WEBSITE CONTENT -->
+    <!-- ========================================== -->
+    <div id="app-main" class="hidden min-h-screen">
+
+        <!-- Navigation -->
+        <nav class="glass sticky top-4 mx-4 my-4 z-40 px-6 py-4 flex justify-between items-center">
+            <div class="flex items-center gap-3 cursor-pointer" onclick="scrollToSection('home')">
+                <div class="w-10 h-10 rounded-full bg-gradient-to-br from-yellow-400 to-yellow-700 flex items-center justify-center border-2 border-yellow-300">
+                    <span class="text-xs font-black text-white">NEDP</span>
+                </div>
+                <div>
+                    <h2 class="font-bold text-lg leading-tight text-yellow-400">Hon. Pedeshe George</h2>
+                    <p class="text-xs text-white/60">Harambee Ward 2027</p>
+                </div>
+            </div>
+
+            <div class="hidden md:flex items-center gap-1">
+                <a href="#home" class="nav-link px-4 py-2 rounded-lg hover:bg-white/10 transition-colors text-sm" onclick="scrollToSection('home')">Home</a>
+                <a href="#about" class="nav-link px-4 py-2 rounded-lg hover:bg-white/10 transition-colors text-sm" onclick="scrollToSection('about')">About</a>
+                <a href="#agenda" class="nav-link px-4 py-2 rounded-lg hover:bg-white/10 transition-colors text-sm" onclick="scrollToSection('agenda')">Agenda</a>
+                <a href="#voter-info" class="nav-link px-4 py-2 rounded-lg hover:bg-white/10 transition-colors text-sm" onclick="scrollToSection('voter-info')">Voter Info</a>
+                <a href="#events" class="nav-link px-4 py-2 rounded-lg hover:bg-white/10 transition-colors text-sm" onclick="scrollToSection('events')">Events</a>
+                <a href="#contact" class="nav-link px-4 py-2 rounded-lg bg-yellow-600/30 hover:bg-yellow-600/50 transition-colors text-yellow-300 text-sm" onclick="scrollToSection('contact')">
+                    <i class="fas fa-handshake mr-1"></i> Join Us
+                </a>
+            </div>
+
+            <button class="md:hidden p-2 text-yellow-400" onclick="toggleMobileMenu()">
+                <i class="fas fa-bars text-xl"></i>
+            </button>
+
+            <div class="hidden md:flex items-center gap-3">
+                <div class="hidden lg:block text-right">
+                    <div id="live-clock" class="text-lg font-mono font-bold text-yellow-400">00:00:00</div>
+                </div>
+                <div class="flex items-center gap-2 bg-white/10 px-3 py-1.5 rounded-full">
+                    <i class="fas fa-user text-yellow-400"></i>
+                    <span id="display-username" class="font-medium text-sm">Citizen</span>
+                </div>
+                <button onclick="handleLogout()" class="p-2 hover:bg-red-500/20 rounded-lg text-red-400 transition-colors" title="Logout">
+                    <i class="fas fa-sign-out-alt"></i>
+                </button>
+            </div>
+        </nav>
+
+        <!-- Mobile Menu -->
+        <div id="mobile-menu" class="hidden fixed inset-0 z-50 bg-black/90 backdrop-blur-lg">
+            <div class="flex flex-col items-center justify-center h-full gap-6">
+                <button onclick="toggleMobileMenu()" class="absolute top-6 right-6 text-yellow-400 text-2xl">
+                    <i class="fas fa-times"></i>
+                </button>
+                <a href="#home" onclick="scrollToSection('home'); toggleMobileMenu();" class="text-2xl font-bold text-white hover:text-yellow-400 transition-colors">Home</a>
+                <a href="#about" onclick="scrollToSection('about'); toggleMobileMenu();" class="text-2xl font-bold text-white hover:text-yellow-400 transition-colors">About</a>
+                <a href="#agenda" onclick="scrollToSection('agenda'); toggleMobileMenu();" class="text-2xl font-bold text-white hover:text-yellow-400 transition-colors">Agenda</a>
+                <a href="#voter-info" onclick="scrollToSection('voter-info'); toggleMobileMenu();" class="text-2xl font-bold text-white hover:text-yellow-400 transition-colors">Voter Info</a>
+                <a href="#events" onclick="scrollToSection('events'); toggleMobileMenu();" class="text-2xl font-bold text-white hover:text-yellow-400 transition-colors">Events</a>
+                <a href="#contact" onclick="scrollToSection('contact'); toggleMobileMenu();" class="text-2xl font-bold text-yellow-400">Join Us</a>
+                <button onclick="handleLogout()" class="mt-4 px-6 py-3 bg-red-600 rounded-xl text-white font-bold">
+                    <i class="fas fa-sign-out-alt mr-2"></i> Logout
+                </button>
+            </div>
+        </div>
+
+        <!-- Hero Section -->
+        <section id="home" class="px-4 md:px-8 py-16 max-w-7xl mx-auto text-center">
+            <div class="glass p-12 rounded-3xl relative overflow-hidden">
+                <div class="absolute inset-0 bg-gradient-to-r from-yellow-500/10 to-red-500/10"></div>
+                <div class="relative z-10">
+                    <!-- Website Profile Picture -->
+                    <div class="mb-8 flex justify-center">
+                        <div class="relative">
+                            <img src="https://images.unsplash.com/photo-1560250097-0b93528c311a?w=300&h=300&fit=crop&crop=face" 
+                                 alt="Hon. Pedeshe George" 
+                                 class="profile-pic"
+                                 id="website-profile-pic"
+                                 onclick="document.getElementById('website-pic-upload').click()"
+                                 style="cursor: pointer;">
+                            <div class="absolute bottom-2 right-2 w-10 h-10 bg-yellow-500 rounded-full flex items-center justify-center cursor-pointer hover:bg-yellow-400 transition-colors"
+                                 onclick="document.getElementById('website-pic-upload').click()">
+                                <i class="fas fa-camera text-black"></i>
+                            </div>
+                            <input type="file" id="website-pic-upload" accept="image/*" class="hidden" onchange="handleProfilePicUpload(event, 'website')">
+                        </div>
+                    </div>
+
+                    <h1 class="text-5xl md:text-7xl font-black mb-4 neon-text" style="font-family: 'Orbitron', sans-serif;">
+                        CHANGE IS COMING
+                    </h1>
+                    <p class="text-xl md:text-2xl text-white/80 mb-8 max-w-3xl mx-auto">
+                        Together, we will build a Harambee Ward that works for everyone. 
+                        Economic development, social justice, and equal opportunities for all.
+                    </p>
+                    <div class="flex gap-4 justify-center flex-wrap">
+                        <button onclick="scrollToSection('agenda')" class="btn-primary px-8 py-4 rounded-xl font-bold text-lg">
+                            <i class="fas fa-bullseye mr-2"></i> Our Agenda
+                        </button>
+                        <button onclick="openVoterModal()" class="px-8 py-4 rounded-xl font-bold text-lg border-2 border-yellow-500 text-yellow-400 hover:bg-yellow-500/20 transition-all">
+                            <i class="fas fa-vote-yea mr-2"></i> Register to Vote
+                        </button>
+                        <button onclick="scrollToSection('contact')" class="px-8 py-4 rounded-xl font-bold text-lg border-2 border-red-500 text-red-400 hover:bg-red-500/20 transition-all">
+                            <i class="fas fa-handshake mr-2"></i> Join Campaign
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- About Section -->
+        <section id="about" class="px-4 md:px-8 py-16 max-w-7xl mx-auto">
+            <div class="glass p-8 md:p-12">
+                <div class="grid md:grid-cols-2 gap-12 items-center">
+                    <div>
+                        <h2 class="text-4xl font-bold mb-6 text-yellow-400">About Hon. Pedeshe George</h2>
+                        <p class="text-lg text-white/70 mb-6 leading-relaxed">
+                            A dedicated public servant committed to transforming Harambee Ward through 
+                            economic empowerment, education, and infrastructure development. With years 
+                            of experience in community organizing and policy advocacy, Hon. Pedeshe 
+                            represents the voice of the people.
+                        </p>
+
+                        <h3 class="text-xl font-bold mb-4 text-yellow-400">Key Achievements</h3>
+                        <ol class="space-y-3 list-decimal list-inside">
+                            <li class="p-3 bg-white/5 rounded-lg hover:bg-white/10 transition-colors cursor-pointer" onclick="showToast('Education: Established 5 new schools and scholarship programs', 'info')">
+                                <span class="font-semibold">Education:</span> Established 5 new schools and scholarship programs
+                            </li>
+                            <li class="p-3 bg-white/5 rounded-lg hover:bg-white/10 transition-colors cursor-pointer" onclick="showToast('Healthcare: Built 3 community health centers', 'info')">
+                                <span class="font-semibold">Healthcare:</span> Built 3 community health centers
+                            </li>
+                            <li class="p-3 bg-white/5 rounded-lg hover:bg-white/10 transition-colors cursor-pointer" onclick="showToast('Youth: Created 2,000+ jobs through NEDP programs', 'info')">
+                                <span class="font-semibold">Youth:</span> Created 2,000+ jobs through NEDP programs
+                            </li>
+                            <li class="p-3 bg-white/5 rounded-lg hover:bg-white/10 transition-colors cursor-pointer" onclick="showToast('Infrastructure: Paved 15km of roads and installed street lighting', 'info')">
+                                <span class="font-semibold">Infrastructure:</span> Paved 15km of roads and installed street lighting
+                            </li>
+                            <li class="p-3 bg-white/5 rounded-lg hover:bg-white/10 transition-colors cursor-pointer" onclick="showToast('Women: Empowered 500+ women through microfinance', 'info')">
+                                <span class="font-semibold">Women:</span> Empowered 500+ women through microfinance
+                            </li>
+                        </ol>
+
+                        <div class="mt-6 flex gap-3">
+                            <button onclick="showToast('Downloading manifesto...', 'info')" class="btn-primary px-6 py-3 rounded-xl">
+                                <i class="fas fa-download mr-2"></i> Manifesto
+                            </button>
+                            <button onclick="scrollToSection('contact')" class="px-6 py-3 rounded-xl border border-yellow-500 text-yellow-400 hover:bg-yellow-500/20 transition-all">
+                                <i class="fas fa-envelope mr-2"></i> Contact
+                            </button>
+                        </div>
+                    </div>
+                    <div class="grid grid-cols-2 gap-4">
+                        <img src="https://images.unsplash.com/photo-1577962917302-cd874c4e31d2?w=400&h=400&fit=crop" class="rounded-2xl shadow-2xl hover:scale-105 transition-transform cursor-pointer" onclick="showToast('Community development project', 'info')">
+                        <img src="https://images.unsplash.com/photo-1569025743873-ea3a9bc3db9f?w=400&h=400&fit=crop" class="rounded-2xl shadow-2xl mt-8 hover:scale-105 transition-transform cursor-pointer" onclick="showToast('Youth empowerment program', 'info')">
+                        <img src="https://images.unsplash.com/photo-1559027615-cd4628902d4a?w=400&h=400&fit=crop" class="rounded-2xl shadow-2xl hover:scale-105 transition-transform cursor-pointer" onclick="showToast('Infrastructure development', 'info')">
+                        <img src="https://images.unsplash.com/photo-1593113598332-cd288d649433?w=400&h=400&fit=crop" class="rounded-2xl shadow-2xl mt-8 hover:scale-105 transition-transform cursor-pointer" onclick="showToast('Community outreach event', 'info')">
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Agenda Section -->
+        <section id="agenda" class="px-4 md:px-8 py-16 max-w-7xl mx-auto">
+            <h2 class="text-4xl font-bold mb-4 text-center text-yellow-400">Our 2027 Agenda</h2>
+            <p class="text-center text-white/60 mb-12 max-w-2xl mx-auto">Click on any agenda card to learn more about our detailed plans and strategies for Harambee Ward</p>
+
+            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6" id="main-agenda-container">
+                <!-- Injected by JS -->
+            </div>
+        </section>
+
+        <!-- Voter Information Section -->
+        <section id="voter-info" class="px-4 md:px-8 py-16 max-w-7xl mx-auto">
+            <div class="glass p-8 md:p-12">
+                <h2 class="text-4xl font-bold mb-8 text-center text-yellow-400">Voter Information Center</h2>
+
+                <div class="grid md:grid-cols-2 gap-8">
+                    <div>
+                        <h3 class="text-2xl font-bold mb-4">Why Your Vote Matters</h3>
+                        <ul class="space-y-4">
+                            <li class="flex items-start gap-3 p-4 bg-white/5 rounded-xl hover:bg-white/10 transition-colors cursor-pointer" onclick="showToast('Your vote determines who represents your interests in government', 'info')">
+                                <i class="fas fa-check-circle text-green-400 text-xl mt-1"></i>
+                                <div>
+                                    <h4 class="font-semibold">Shape Your Future</h4>
+                                    <p class="text-sm text-white/60">Your vote determines who represents your interests in government.</p>
+                                </div>
+                            </li>
+                            <li class="flex items-start gap-3 p-4 bg-white/5 rounded-xl hover:bg-white/10 transition-colors cursor-pointer" onclick="showToast('Voting is your power to demand transparency and good governance', 'info')">
+                                <i class="fas fa-check-circle text-green-400 text-xl mt-1"></i>
+                                <div>
+                                    <h4 class="font-semibold">Hold Leaders Accountable</h4>
+                                    <p class="text-sm text-white/60">Voting is your power to demand transparency and good governance.</p>
+                                </div>
+                            </li>
+                            <li class="flex items-start gap-3 p-4 bg-white/5 rounded-xl hover:bg-white/10 transition-colors cursor-pointer" onclick="showToast('Elected leaders allocate resources for roads, schools, and hospitals', 'info')">
+                                <i class="fas fa-check-circle text-green-400 text-xl mt-1"></i>
+                                <div>
+                                    <h4 class="font-semibold">Community Development</h4>
+                                    <p class="text-sm text-white/60">Elected leaders allocate resources for roads, schools, and hospitals.</p>
+                                </div>
+                            </li>
+                        </ul>
+
+                        <div class="mt-6 p-4 bg-yellow-500/10 rounded-xl border border-yellow-500/30">
+                            <h4 class="font-bold text-yellow-400 mb-2"><i class="fas fa-calendar-alt mr-2"></i> Election Timeline</h4>
+                            <div class="space-y-2 text-sm">
+                                <div class="flex justify-between"><span>Voter Registration Deadline</span><span class="text-yellow-400">Dec 2026</span></div>
+                                <div class="flex justify-between"><span>Campaign Period</span><span class="text-yellow-400">Jan - Jul 2027</span></div>
+                                <div class="flex justify-between"><span>Election Day</span><span class="text-yellow-400">Aug 2027</span></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="iebc-badge">
+                        <img src="https://images.unsplash.com/photo-1541872703-74c5e44368f9?w=200&h=200&fit=crop" class="w-24 h-24 rounded-full mx-auto mb-4 border-4 border-yellow-400 object-cover">
+                        <h3 class="text-xl font-bold text-white mb-2">IEBC Registration</h3>
+                        <p class="text-white/80 text-sm mb-4">Independent Electoral and Boundaries Commission</p>
+
+                        <div class="space-y-3 text-left">
+                            <div class="flex items-center gap-2 text-sm">
+                                <i class="fas fa-globe text-yellow-400"></i>
+                                <a href="https://www.iebc.or.ke" target="_blank" class="text-yellow-400 hover:underline">www.iebc.or.ke</a>
+                            </div>
+                            <div class="flex items-center gap-2 text-sm">
+                                <i class="fas fa-phone text-yellow-400"></i>
+                                <span>020 2877000</span>
+                            </div>
+                            <div class="flex items-center gap-2 text-sm">
+                                <i class="fas fa-mobile-alt text-yellow-400"></i>
+                                <span>Dial *222# to check status</span>
+                            </div>
+                        </div>
+
+                        <button onclick="openVoterModal()" class="mt-4 w-full py-3 bg-yellow-500 text-blue-900 rounded-xl font-bold hover:bg-yellow-400 transition-colors">
+                            <i class="fas fa-vote-yea mr-2"></i> Register Now
+                        </button>
+
+                        <div class="mt-4 grid grid-cols-2 gap-2">
+                            <button onclick="showToast('Voter requirements: Kenyan citizen, 18+ years, valid ID', 'info')" class="py-2 bg-white/10 rounded-lg text-xs hover:bg-white/20 transition-colors">
+                                <i class="fas fa-list-check mr-1"></i> Requirements
+                            </button>
+                            <button onclick="showToast('Polling stations: Harambee Primary, Makadara Social Hall, Kamukunji Grounds', 'info')" class="py-2 bg-white/10 rounded-lg text-xs hover:bg-white/20 transition-colors">
+                                <i class="fas fa-location-dot mr-1"></i> Polling Stations
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Events Section -->
+        <section id="events" class="px-4 md:px-8 py-16 max-w-7xl mx-auto">
+            <h2 class="text-4xl font-bold mb-12 text-center text-yellow-400">Upcoming Events</h2>
+
+            <div class="grid md:grid-cols-3 gap-6" id="events-container">
+                <!-- Events injected by JavaScript -->
+            </div>
+
+            <div class="text-center mt-8">
+                <button onclick="showToast('Loading more events...', 'info'); setTimeout(() => loadMoreEvents(), 1000)" class="btn-primary px-8 py-3 rounded-xl">
+                    <i class="fas fa-calendar-plus mr-2"></i> Load More Events
+                </button>
+            </div>
+        </section>
+
+        <!-- Contact Section -->
+        <section id="contact" class="px-4 md:px-8 py-16 max-w-7xl mx-auto">
+            <div class="glass p-8 md:p-12">
+                <h2 class="text-4xl font-bold mb-12 text-center text-yellow-400">Get In Touch</h2>
+
+                <div class="grid md:grid-cols-2 gap-12">
+                    <div class="space-y-6">
+                        <div class="flex items-center gap-4 p-4 bg-white/5 rounded-2xl hover:bg-white/10 transition-colors cursor-pointer" onclick="copyToClipboard('+254723456789')">
+                            <div class="w-12 h-12 bg-yellow-500/20 rounded-xl flex items-center justify-center">
+                                <i class="fas fa-phone text-yellow-400"></i>
+                            </div>
+                            <div>
+                                <p class="text-sm text-white/50">Campaign Hotline</p>
+                                <p class="font-semibold text-lg">+254 723 456 789</p>
+                            </div>
+                            <i class="fas fa-copy text-white/30 ml-auto"></i>
+                        </div>
+
+                        <div class="flex items-center gap-4 p-4 bg-white/5 rounded-2xl hover:bg-white/10 transition-colors cursor-pointer" onclick="copyToClipboard('info@pedeshe2027.co.ke')">
+                            <div class="w-12 h-12 bg-yellow-500/20 rounded-xl flex items-center justify-center">
+                                <i class="fas fa-envelope text-yellow-400"></i>
+                            </div>
+                            <div>
+                                <p class="text-sm text-white/50">Email</p>
+                                <p class="font-semibold">info@pedeshe2027.co.ke</p>
+                            </div>
+                            <i class="fas fa-copy text-white/30 ml-auto"></i>
+                        </div>
+
+                        <div class="flex items-center gap-4 p-4 bg-white/5 rounded-2xl hover:bg-white/10 transition-colors">
+                            <div class="w-12 h-12 bg-yellow-500/20 rounded-xl flex items-center justify-center">
+                                <i class="fas fa-map-marker-alt text-yellow-400"></i>
+                            </div>
+                            <div>
+                                <p class="text-sm text-white/50">Campaign Office</p>
+                                <p class="font-semibold">Harambee Ward, Nairobi East</p>
+                            </div>
+                        </div>
+
+                        <!-- Social Media -->
+                        <div class="pt-6">
+                            <p class="text-sm text-white/50 mb-4">Follow the Campaign</p>
+                            <div class="flex gap-3">
+                                <a href="https://facebook.com" target="_blank" class="w-12 h-12 bg-blue-600 rounded-xl flex items-center justify-center hover:scale-110 transition-transform" title="Facebook">
+                                    <i class="fab fa-facebook-f"></i>
+                                </a>
+                                <a href="https://instagram.com" target="_blank" class="w-12 h-12 bg-gradient-to-br from-purple-500 to-pink-500 rounded-xl flex items-center justify-center hover:scale-110 transition-transform" title="Instagram">
+                                    <i class="fab fa-instagram"></i>
+                                </a>
+                                <a href="https://twitter.com" target="_blank" class="w-12 h-12 bg-blue-400 rounded-xl flex items-center justify-center hover:scale-110 transition-transform" title="Twitter">
+                                    <i class="fab fa-twitter"></i>
+                                </a>
+                                <a href="https://tiktok.com" target="_blank" class="w-12 h-12 bg-black border border-white/20 rounded-xl flex items-center justify-center hover:scale-110 transition-transform" title="TikTok">
+                                    <i class="fab fa-tiktok"></i>
+                                </a>
+                                <a href="https://wa.me/254723456789" target="_blank" class="w-12 h-12 bg-green-600 rounded-xl flex items-center justify-center hover:scale-110 transition-transform" title="WhatsApp">
+                                    <i class="fab fa-whatsapp"></i>
+                                </a>
+                            </div>
+                        </div>
+
+                        <!-- Quick Actions -->
+                        <div class="pt-4 grid grid-cols-2 gap-3">
+                            <button onclick="showToast('Volunteer registration form opening...', 'info')" class="p-3 bg-green-600/20 border border-green-500/30 rounded-xl hover:bg-green-600/30 transition-colors text-sm">
+                                <i class="fas fa-hand-holding-heart mr-2 text-green-400"></i> Volunteer
+                            </button>
+                            <button onclick="showToast('Donation portal opening...', 'info')" class="p-3 bg-yellow-600/20 border border-yellow-500/30 rounded-xl hover:bg-yellow-600/30 transition-colors text-sm">
+                                <i class="fas fa-donate mr-2 text-yellow-400"></i> Donate
+                            </button>
+                        </div>
+                    </div>
+
+                    <form id="contact-form" class="space-y-4" onsubmit="return false;">
+                        <input type="text" id="contact-name" placeholder="Your Name" class="contact-input w-full px-4 py-3 rounded-xl">
+                        <input type="email" id="contact-email" placeholder="Your Email" class="contact-input w-full px-4 py-3 rounded-xl">
+                        <input type="tel" id="contact-phone" placeholder="Phone Number" class="contact-input w-full px-4 py-3 rounded-xl">
+                        <select id="contact-subject" class="contact-input w-full px-4 py-3 rounded-xl">
+                            <option value="">Select Subject</option>
+                            <option value="volunteer">I want to volunteer</option>
+                            <option value="donate">I want to donate</option>
+                            <option value="event">Event inquiry</option>
+                            <option value="voter">Voter registration help</option>
+                            <option value="other">Other</option>
+                        </select>
+                        <textarea id="contact-message" rows="4" placeholder="Your Message" class="contact-input w-full px-4 py-3 rounded-xl resize-none"></textarea>
+                        <button type="button" onclick="submitContact()" class="btn-primary w-full py-3 rounded-xl font-bold text-lg">
+                            <span class="flex items-center justify-center gap-2">
+                                <i class="fas fa-paper-plane"></i> Send Message
+                            </span>
+                        </button>
+                        <div id="contact-reply" class="hidden mt-4 p-4 bg-green-500/20 border border-green-500/30 rounded-xl text-green-400 text-center"></div>
+                    </form>
+                </div>
+            </div>
+        </section>
+
+        <!-- Footer -->
+        <footer class="glass mx-4 my-8 p-8 text-center">
+            <div class="flex justify-center gap-6 mb-4">
+                <a href="#" onclick="showToast('Privacy Policy coming soon', 'info')" class="text-white/60 hover:text-yellow-400 transition-colors text-sm">Privacy Policy</a>
+                <a href="#" onclick="showToast('Terms of Service coming soon', 'info')" class="text-white/60 hover:text-yellow-400 transition-colors text-sm">Terms of Service</a>
+                <a href="#" onclick="showToast('Cookie Policy coming soon', 'info')" class="text-white/60 hover:text-yellow-400 transition-colors text-sm">Cookie Policy</a>
+            </div>
+            <p class="text-white/40 text-sm">
+                &copy; 2027 Hon. Pedeshe George Campaign. All rights reserved. | NEDP - National Economic Development Party
+            </p>
+        </footer>
+    </div>
+
+    <script>
+        // ==========================================
+        // AGENDA DATA
+        // ==========================================
+        const agendas = [
+            {
+                id: 1,
+                title: "Education for All",
+                icon: "fa-graduation-cap",
+                color: "yellow",
+                summary: "Free primary and secondary education. Bursaries for university students. Vocational training centers.",
+                details: {
+                    description: "We believe education is the foundation of economic development. Our comprehensive education plan includes:",
+                    points: [
+                        "Free primary and secondary education for all children in Harambee Ward",
+                        "Bursary fund of KES 50M annually for university and college students",
+                        "Establishment of 5 new vocational training centers by 2028",
+                        "Digital literacy programs for all age groups",
+                        "School feeding program to improve attendance and performance",
+                        "Teacher training and capacity building initiatives",
+                        "STEM education focus with computer labs in every school"
+                    ],
+                    budget: "KES 200M over 4 years",
+                    timeline: "Phase 1: 2027-2028, Phase 2: 2028-2030"
+                }
+            },
+            {
+                id: 2,
+                title: "Universal Healthcare",
+                icon: "fa-heartbeat",
+                color: "red",
+                summary: "Community health centers in every ward. Free maternal care. NHIF coverage for all families.",
+                details: {
+                    description: "Healthcare is a human right. Our healthcare transformation plan includes:",
+                    points: [
+                        "Construction of 3 new community health centers in Harambee Ward",
+                        "Free maternal and child healthcare services",
+                        "NHIF enrollment for 10,000 uninsured families",
+                        "Mobile clinic services for remote areas",
+                        "Mental health awareness and counseling services",
+                        "Chronic disease management programs",
+                        "Health insurance subsidies for low-income families"
+                    ],
+                    budget: "KES 150M over 4 years",
+                    timeline: "Immediate implementation starting 2027"
+                }
+            },
+            {
+                id: 3,
+                title: "Youth Employment",
+                icon: "fa-briefcase",
+                color: "green",
+                summary: "10,000 jobs annually. Youth enterprise fund. Skills development programs.",
+                details: {
+                    description: "Youth are the engine of our economy. Our youth empowerment strategy includes:",
+                    points: [
+                        "Creation of 10,000 jobs annually through public works and private partnerships",
+                        "Youth Enterprise Development Fund with low-interest loans",
+                        "Apprenticeship programs with local businesses",
+                        "Digital skills training and freelancing opportunities",
+                        "Agricultural value chain employment initiatives",
+                        "Sports and creative industry development",
+                        "Annual job fairs and career counseling"
+                    ],
+                    budget: "KES 300M over 4 years",
+                    timeline: "Rolling program starting Q1 2027"
+                }
+            },
+            {
+                id: 4,
+                title: "Infrastructure",
+                icon: "fa-road",
+                color: "blue",
+                summary: "Road construction and repair. Clean water access. Reliable electricity and internet.",
+                details: {
+                    description: "Modern infrastructure drives development. Our infrastructure masterplan includes:",
+                    points: [
+                        "Construction and repair of 50km of roads in Harambee Ward",
+                        "Installation of solar street lighting in all major streets",
+                        "Clean water pipeline extension to 5,000 households",
+                        "Public Wi-Fi hotspots in community centers",
+                        "Drainage system improvements to prevent flooding",
+                        "Public toilet facilities in market areas",
+                        "Waste management and recycling centers"
+                    ],
+                    budget: "KES 500M over 4 years",
+                    timeline: "Multi-phase project 2027-2031"
+                }
+            },
+            {
+                id: 5,
+                title: "Women Empowerment",
+                icon: "fa-venus",
+                color: "purple",
+                summary: "Microfinance programs. Women-led business support. Gender equality in leadership.",
+                details: {
+                    description: "When women thrive, communities prosper. Our women empowerment agenda includes:",
+                    points: [
+                        "Microfinance loans of KES 5M for women-led businesses",
+                        "Women's cooperative societies and table banking",
+                        "Leadership training and mentorship programs",
+                        "Safe spaces and gender-based violence prevention",
+                        "Maternal economic empowerment during pregnancy",
+                        "Women in STEM scholarship programs",
+                        "Market access support for women entrepreneurs"
+                    ],
+                    budget: "KES 100M over 4 years",
+                    timeline: "Continuous program from 2027"
+                }
+            },
+            {
+                id: 6,
+                title: "Environment",
+                icon: "fa-leaf",
+                color: "orange",
+                summary: "Tree planting initiatives. Clean-up drives. Climate change awareness programs.",
+                details: {
+                    description: "Protecting our environment for future generations. Our green agenda includes:",
+                    points: [
+                        "Plant 100,000 trees across Harambee Ward by 2030",
+                        "Monthly community clean-up drives",
+                        "Waste segregation and recycling programs",
+                        "Climate change education in schools",
+                        "Green energy promotion and solar panel subsidies",
+                        "Community gardens and urban farming",
+                        "Plastic ban enforcement and alternatives"
+                    ],
+                    budget: "KES 80M over 4 years",
+                    timeline: "Tree planting starts immediately"
+                }
+            },
+            {
+                id: 7,
+                title: "Digital Transformation",
+                icon: "fa-laptop-code",
+                color: "cyan",
+                summary: "Free public Wi-Fi. Digital literacy. E-government services. Tech hubs.",
+                details: {
+                    description: "Bridging the digital divide. Our digital transformation plan includes:",
+                    points: [
+                        "Free public Wi-Fi in all community centers and markets",
+                        "Digital literacy training for 5,000 residents annually",
+                        "E-government services portal for ward operations",
+                        "Tech innovation hubs with free co-working spaces",
+                        "Free coding bootcamps for youth",
+                        "Digital payment systems for all government services",
+                        "Smart city pilot projects"
+                    ],
+                    budget: "KES 120M over 4 years",
+                    timeline: "Phase 1: 2027-2028"
+                }
+            },
+            {
+                id: 8,
+                title: "Agriculture & Food Security",
+                icon: "fa-seedling",
+                color: "emerald",
+                summary: "Urban farming. Food banks. Agricultural subsidies. Market access.",
+                details: {
+                    description: "Ensuring no one goes hungry. Our food security strategy includes:",
+                    points: [
+                        "Urban farming plots allocation for 1,000 households",
+                        "Community food banks in every sub-location",
+                        "Agricultural input subsidies for small-scale farmers",
+                        "Farmer's market infrastructure improvements",
+                        "Irrigation systems for urban gardens",
+                        "Livestock development programs",
+                        "Food processing and preservation training"
+                    ],
+                    budget: "KES 90M over 4 years",
+                    timeline: "Immediate rollout starting 2027"
+                }
+            },
+            {
+                id: 9,
+                title: "Security & Safety",
+                icon: "fa-shield-alt",
+                color: "red",
+                summary: "Community policing. Street lighting. CCTV cameras. Emergency response.",
+                details: {
+                    description: "Safety first. Our security enhancement plan includes:",
+                    points: [
+                        "Community policing partnerships with local authorities",
+                        "Installation of 500 CCTV cameras in crime hotspots",
+                        "24/7 emergency response hotline",
+                        "Street lighting on all major and minor roads",
+                        "Neighborhood watch program training",
+                        "Youth rehabilitation and crime prevention",
+                        "Fire safety equipment for all public buildings"
+                    ],
+                    budget: "KES 180M over 4 years",
+                    timeline: "Phase 1: 2027-2028"
+                }
+            },
+            {
+                id: 10,
+                title: "Sports & Culture",
+                icon: "fa-futbol",
+                color: "pink",
+                summary: "Sports facilities. Cultural festivals. Talent development. Arts programs.",
+                details: {
+                    description: "Celebrating our heritage and nurturing talent. Our sports and culture agenda includes:",
+                    points: [
+                        "Construction of 3 multi-purpose sports complexes",
+                        "Annual Harambee Cultural Festival",
+                        "Talent scouting and development programs",
+                        "Arts and music academy for youth",
+                        "Sports equipment for all schools",
+                        "Community theater and drama groups",
+                        "Traditional arts and crafts preservation"
+                    ],
+                    budget: "KES 70M over 4 years",
+                    timeline: "Continuous from 2027"
+                }
+            },
+            {
+                id: 11,
+                title: "Housing & Settlement",
+                icon: "fa-home",
+                color: "indigo",
+                summary: "Affordable housing. Slum upgrading. Title deeds. Sanitation.",
+                details: {
+                    description: "Everyone deserves a decent home. Our housing plan includes:",
+                    points: [
+                        "1,000 affordable housing units by 2030",
+                        "Slum upgrading with proper sanitation",
+                        "Title deed processing acceleration",
+                        "Community toilet facilities",
+                        "Garbage collection services expansion",
+                        "Rental housing subsidies for low-income families",
+                        "Housing cooperative societies support"
+                    ],
+                    budget: "KES 400M over 4 years",
+                    timeline: "Phase 1: 2027-2029"
+                }
+            },
+            {
+                id: 12,
+                title: "Elderly & PWD Support",
+                icon: "fa-wheelchair",
+                color: "teal",
+                summary: "Pension support. Disability access. Care centers. Medical aid.",
+                details: {
+                    description: "Caring for our most vulnerable. Our support program includes:",
+                    points: [
+                        "Monthly stipend for elderly residents above 65",
+                        "PWD accessibility infrastructure in all public buildings",
+                        "Community care centers for the elderly",
+                        "Free medical aid for PWDs",
+                        "Assistive devices distribution program",
+                        "Home care services for bedridden residents",
+                        "Special education support for children with disabilities"
+                    ],
+                    budget: "KES 110M over 4 years",
+                    timeline: "Immediate from 2027"
+                }
+            }
+        ];
+
+        // ==========================================
+        // EVENTS DATA
+        // ==========================================
+        const events = [
+            {
+                id: 1,
+                title: "Campaign Launch Rally",
+                date: "2027-01-15",
+                time: "10:00 AM",
+                location: "Harambee Grounds",
+                description: "Join us for the official campaign launch. Meet Hon. Pedeshe George and learn about our vision for Harambee Ward.",
+                icon: "fa-bullhorn",
+                color: "yellow"
+            },
+            {
+                id: 2,
+                title: "Youth Empowerment Summit",
+                date: "2027-02-20",
+                time: "9:00 AM",
+                location: "Makadara Social Hall",
+                description: "A day of inspiration, networking, and job opportunities for young people in Harambee Ward.",
+                icon: "fa-users",
+                color: "green"
+            },
+            {
+                id: 3,
+                title: "Women's Economic Forum",
+                date: "2027-03-08",
+                time: "2:00 PM",
+                location: "Harambee Ward Office",
+                description: "Celebrating International Women's Day with business training, microfinance access, and mentorship.",
+                icon: "fa-venus",
+                color: "purple"
+            }
+        ];
+
+        // ==========================================
+        // UTILITY FUNCTIONS
+        // ==========================================
+        function showToast(message, type = 'info') {
+            const container = document.getElementById('toast-container');
+            const toast = document.createElement('div');
+            toast.className = `toast toast-${type}`;
+            toast.innerHTML = `
+                <div class="flex items-center gap-3">
+                    <i class="fas ${type === 'success' ? 'fa-check-circle' : type === 'error' ? 'fa-exclamation-circle' : 'fa-info-circle'}"></i>
+                    <span>${message}</span>
+                </div>
+            `;
+            container.appendChild(toast);
+
+            setTimeout(() => toast.classList.add('show'), 100);
+            setTimeout(() => {
+                toast.classList.remove('show');
+                setTimeout(() => toast.remove(), 400);
+            }, 3000);
+        }
+
+        function copyToClipboard(text) {
+            navigator.clipboard.writeText(text).then(() => {
+                showToast(`Copied: ${text}`, 'success');
+            }).catch(() => {
+                showToast('Failed to copy', 'error');
+            });
+        }
+
+        // ==========================================
+        // THEME TOGGLE
+        // ==========================================
+        function toggleTheme() {
+            const body = document.body;
+            const icon = document.getElementById('theme-icon');
+            const currentTheme = body.getAttribute('data-theme');
+            const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+
+            body.setAttribute('data-theme', newTheme);
+            icon.className = newTheme === 'dark' ? 'fas fa-moon' : 'fas fa-sun';
+
+            showToast(`${newTheme.charAt(0).toUpperCase() + newTheme.slice(1)} mode activated`, 'info');
+        }
+
+        // ==========================================
+        // AUTHENTICATION
+        // ==========================================
+        function switchAuthTab(tab) {
+            const loginForm = document.getElementById('form-login');
+            const signupForm = document.getElementById('form-signup');
+            const loginTab = document.getElementById('tab-login');
+            const signupTab = document.getElementById('tab-signup');
+
+            if (tab === 'login') {
+                loginForm.classList.remove('hidden');
+                signupForm.classList.add('hidden');
+                loginTab.className = 'flex-1 py-3 rounded-lg bg-gradient-to-r from-yellow-600 to-yellow-700 text-white font-bold transition-all shadow-md';
+                signupTab.className = 'flex-1 py-3 rounded-lg text-white/70 font-bold hover:text-white transition-all hover:bg-white/10';
+            } else {
+                loginForm.classList.add('hidden');
+                signupForm.classList.remove('hidden');
+                signupTab.className = 'flex-1 py-3 rounded-lg bg-gradient-to-r from-yellow-600 to-yellow-700 text-white font-bold transition-all shadow-md';
+                loginTab.className = 'flex-1 py-3 rounded-lg text-white/70 font-bold hover:text-white transition-all hover:bg-white/10';
+            }
+        }
+
+        function handleLogin() {
+            const email = document.getElementById('login-email').value;
+            const password = document.getElementById('login-password').value;
+            const errorEl = document.getElementById('auth-error');
+
+            if (!email || !password) {
+                errorEl.textContent = 'Please fill in all fields';
+                errorEl.classList.remove('hidden');
+                return;
+            }
+
+            // Simulate login
+            const btn = document.getElementById('btn-login');
+            btn.innerHTML = '<div class="spinner mx-auto"></div>';
+            btn.disabled = true;
+
+            setTimeout(() => {
+                document.getElementById('auth-gate').classList.add('hidden');
+                document.getElementById('app-main').classList.remove('hidden');
+                document.getElementById('display-username').textContent = email.split('@')[0];
+                showToast('Welcome back, Citizen!', 'success');
+                startClock();
+            }, 1500);
+        }
+
+        function handleSignup() {
+            const name = document.getElementById('signup-name').value;
+            const email = document.getElementById('signup-email').value;
+            const password = document.getElementById('signup-password').value;
+            const errorEl = document.getElementById('auth-error');
+
+            if (!name || !email || !password) {
+                errorEl.textContent = 'Please fill in all required fields';
+                errorEl.classList.remove('hidden');
+                return;
+            }
+
+            const btn = document.getElementById('btn-signup');
+            btn.innerHTML = '<div class="spinner mx-auto"></div>';
+            btn.disabled = true;
+
+            setTimeout(() => {
+                document.getElementById('auth-gate').classList.add('hidden');
+                document.getElementById('app-main').classList.remove('hidden');
+                document.getElementById('display-username').textContent = name;
+                showToast('Welcome to the movement, ' + name + '!', 'success');
+                startClock();
+            }, 1500);
+        }
+
+        function handleLogout() {
+            document.getElementById('app-main').classList.add('hidden');
+            document.getElementById('auth-gate').classList.remove('hidden');
+            document.getElementById('form-login').reset();
+            document.getElementById('form-signup').reset();
+            document.getElementById('btn-login').innerHTML = '<span class="flex items-center justify-center gap-2"><i class="fas fa-sign-in-alt"></i> Access Portal</span>';
+            document.getElementById('btn-login').disabled = false;
+            document.getElementById('btn-signup').innerHTML = '<span class="flex items-center justify-center gap-2"><i class="fas fa-user-plus"></i> Join the Movement</span>';
+            document.getElementById('btn-signup').disabled = false;
+            showToast('Logged out successfully', 'info');
+        }
+
+        // ==========================================
+        // NAVIGATION
+        // ==========================================
+        function scrollToSection(sectionId) {
+            const section = document.getElementById(sectionId);
+            if (section) {
+                section.scrollIntoView({ behavior: 'smooth' });
+            }
+        }
+
+        function toggleMobileMenu() {
+            const menu = document.getElementById('mobile-menu');
+            menu.classList.toggle('hidden');
+        }
+
+        // ==========================================
+        // COUNTDOWN TIMER
+        // ==========================================
+        function updateCountdown() {
+            const electionDate = new Date('2027-08-09T06:00:00');
+            const now = new Date();
+            const diff = electionDate - now;
+
+            if (diff > 0) {
+                const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+                const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+                const seconds = Math.floor((diff % (1000 * 60)) / 1000);
+
+                document.getElementById('cd-days').textContent = String(days).padStart(3, '0');
+                document.getElementById('cd-hours').textContent = String(hours).padStart(2, '0');
+                document.getElementById('cd-minutes').textContent = String(minutes).padStart(2, '0');
+                document.getElementById('cd-seconds').textContent = String(seconds).padStart(2, '0');
+            }
+        }
+
+        // ==========================================
+        // LIVE CLOCK
+        // ==========================================
+        function startClock() {
+            setInterval(() => {
+                const now = new Date();
+                document.getElementById('live-clock').textContent = now.toLocaleTimeString('en-KE', { hour12: false });
+            }, 1000);
+        }
+
+        // ==========================================
+        // BACKGROUND SLIDESHOW
+        // ==========================================
+        let currentSlide = 0;
+        function rotateBackground() {
+            const slides = document.querySelectorAll('.bg-slide');
+            slides[currentSlide].classList.remove('active');
+            currentSlide = (currentSlide + 1) % slides.length;
+            slides[currentSlide].classList.add('active');
+        }
+
+        // ==========================================
+        // AGENDA CARDS RENDERING
+        // ==========================================
+        function renderAgendaCards() {
+            // Gate level cards (first 4)
+            const gateContainer = document.getElementById('gate-agenda-cards');
+            const gateAgendas = agendas.slice(0, 4);
+
+            gateContainer.innerHTML = gateAgendas.map((agenda, index) => `
+                <div class="agenda-card glass-card animate-float${index % 2 === 0 ? '' : '-delayed'} text-center" 
+                     style="animation-delay: ${index * 0.5}s;"
+                     onclick="openAgendaModal(${agenda.id})">
+                    <i class="fas ${agenda.icon} text-3xl text-${agenda.color}-400 mb-2"></i>
+                    <h4 class="font-bold text-sm">${agenda.title}</h4>
+                    <p class="text-xs text-white/60 mt-1">${agenda.summary.substring(0, 40)}...</p>
+                    <div class="mt-2 text-xs text-yellow-400 font-semibold">Click to learn more</div>
+                </div>
+            `).join('');
+
+            // Main website cards (all 12)
+            const mainContainer = document.getElementById('main-agenda-container');
+
+            mainContainer.innerHTML = agendas.map((agenda, index) => `
+                <div class="agenda-card glass-card animate-float${index % 2 === 0 ? '' : '-delayed'}" 
+                     style="animation-delay: ${index * 0.3}s;"
+                     onclick="openAgendaModal(${agenda.id})">
+                    <div class="w-14 h-14 bg-${agenda.color}-500/20 rounded-xl flex items-center justify-center mb-4">
+                        <i class="fas ${agenda.icon} text-2xl text-${agenda.color}-400"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-2">${agenda.title}</h3>
+                    <p class="text-white/60 text-sm">${agenda.summary}</p>
+                    <div class="mt-4 flex items-center justify-between">
+                        <span class="text-xs text-yellow-400 font-semibold">Click for details</span>
+                        <i class="fas fa-arrow-right text-yellow-400"></i>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // ==========================================
+        // AGENDA MODAL
+        // ==========================================
+        function openAgendaModal(agendaId) {
+            const agenda = agendas.find(a => a.id === agendaId);
+            if (!agenda) return;
+
+            const modal = document.getElementById('agenda-modal');
+            const content = document.getElementById('agenda-modal-content');
+
+            content.innerHTML = `
+                <div class="text-center mb-6">
+                    <div class="w-20 h-20 bg-${agenda.color}-500/20 rounded-2xl flex items-center justify-center mx-auto mb-4">
+                        <i class="fas ${agenda.icon} text-4xl text-${agenda.color}-400"></i>
+                    </div>
+                    <h2 class="text-3xl font-bold text-yellow-400 mb-2">${agenda.title}</h2>
+                    <p class="text-white/60">${agenda.summary}</p>
+                </div>
+
+                <div class="space-y-6">
+                    <div class="p-4 bg-white/5 rounded-xl">
+                        <h3 class="font-bold text-lg text-yellow-400 mb-3"><i class="fas fa-info-circle mr-2"></i>Overview</h3>
+                        <p class="text-white/70">${agenda.details.description}</p>
+                    </div>
+
+                    <div class="p-4 bg-white/5 rounded-xl">
+                        <h3 class="font-bold text-lg text-yellow-400 mb-3"><i class="fas fa-list-check mr-2"></i>Key Initiatives</h3>
+                        <ul class="space-y-2">
+                            ${agenda.details.points.map(point => `
+                                <li class="flex items-start gap-2 text-white/70">
+                                    <i class="fas fa-check text-green-400 mt-1"></i>
+                                    <span>${point}</span>
+                                </li>
+                            `).join('')}
+                        </ul>
+                    </div>
+
+                    <div class="grid grid-cols-2 gap-4">
+                        <div class="p-4 bg-yellow-500/10 rounded-xl border border-yellow-500/30">
+                            <h4 class="font-bold text-yellow-400 mb-1"><i class="fas fa-money-bill-wave mr-2"></i>Budget</h4>
+                            <p class="text-white/70 text-sm">${agenda.details.budget}</p>
+                        </div>
+                        <div class="p-4 bg-blue-500/10 rounded-xl border border-blue-500/30">
+                            <h4 class="font-bold text-blue-400 mb-1"><i class="fas fa-clock mr-2"></i>Timeline</h4>
+                            <p class="text-white/70 text-sm">${agenda.details.timeline}</p>
+                        </div>
+                    </div>
+
+                    <button onclick="closeAgendaModal(); scrollToSection('contact');" class="btn-primary w-full py-3 rounded-xl">
+                        <i class="fas fa-handshake mr-2"></i> Support This Agenda
+                    </button>
+                </div>
+            `;
+
+            modal.classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeAgendaModal(event) {
+            if (event && event.target !== event.currentTarget) return;
+            document.getElementById('agenda-modal').classList.remove('active');
+            document.body.style.overflow = '';
+        }
+
+        // ==========================================
+        // VOTER MODAL
+        // ==========================================
+        function openVoterModal() {
+            document.getElementById('voter-modal').classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeVoterModal(event) {
+            if (event && event.target !== event.currentTarget) return;
+            document.getElementById('voter-modal').classList.remove('active');
+            document.body.style.overflow = '';
+        }
+
+        // ==========================================
+        // EVENTS RENDERING
+        // ==========================================
+        function renderEvents() {
+            const container = document.getElementById('events-container');
+
+            container.innerHTML = events.map(event => {
+                const eventDate = new Date(event.date);
+                const month = eventDate.toLocaleString('default', { month: 'short' });
+                const day = eventDate.getDate();
+
+                return `
+                    <div class="glass-card p-6 hover:scale-105 transition-transform cursor-pointer" onclick="showToast('Event: ${event.title} on ${event.date}', 'info')">
+                        <div class="flex items-start gap-4">
+                            <div class="bg-${event.color}-500/20 rounded-xl p-4 text-center min-w-[80px]">
+                                <div class="text-2xl font-bold text-${event.color}-400">${day}</div>
+                                <div class="text-xs text-white/60">${month}</div>
+                            </div>
+                            <div class="flex-1">
+                                <h3 class="font-bold text-lg mb-1">${event.title}</h3>
+                                <p class="text-sm text-white/60 mb-2">${event.description}</p>
+                                <div class="flex items-center gap-4 text-xs text-white/40">
+                                    <span><i class="fas fa-clock mr-1"></i>${event.time}</span>
+                                    <span><i class="fas fa-map-marker-alt mr-1"></i>${event.location}</span>
+                                </div>
+                            </div>
+                        </div>
+                        <button class="mt-4 w-full py-2 bg-white/5 rounded-lg hover:bg-white/10 transition-colors text-sm" onclick="event.stopPropagation(); showToast('You will be reminded about this event', 'success')">
+                            <i class="fas fa-bell mr-2 text-yellow-400"></i> Remind Me
+                        </button>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function loadMoreEvents() {
+            const newEvents = [
+                {
+                    id: 4,
+                    title: "Community Clean-Up Day",
+                    date: "2027-04-22",
+                    time: "8:00 AM",
+                    location: "Harambee Ward",
+                    description: "Join us for Earth Day community clean-up. Let's keep Harambee clean and green!",
+                    icon: "fa-broom",
+                    color: "green"
+                },
+                {
+                    id: 5,
+                    title: "Education Fundraiser",
+                    date: "2027-05-15",
+                    time: "6:00 PM",
+                    location: "Nairobi Serena Hotel",
+                    description: "Annual gala dinner to raise funds for bursaries and school infrastructure.",
+                    icon: "fa-graduation-cap",
+                    color: "yellow"
+                },
+                {
+                    id: 6,
+                    title: "Health Screening Drive",
+                    date: "2027-06-05",
+                    time: "9:00 AM",
+                    location: "Harambee Health Center",
+                    description: "Free health screening for diabetes, hypertension, and cancer. All welcome!",
+                    icon: "fa-stethoscope",
+                    color: "red"
+                }
+            ];
+
+            events.push(...newEvents);
+            renderEvents();
+            showToast('More events loaded!', 'success');
+        }
+
+        // ==========================================
+        // CONTACT FORM
+        // ==========================================
+        function submitContact() {
+            const name = document.getElementById('contact-name').value;
+            const email = document.getElementById('contact-email').value;
+            const subject = document.getElementById('contact-subject').value;
+            const message = document.getElementById('contact-message').value;
+            const replyEl = document.getElementById('contact-reply');
+
+            if (!name || !email || !subject || !message) {
+                showToast('Please fill in all fields', 'error');
+                return;
+            }
+
+            replyEl.innerHTML = `
+                <i class="fas fa-check-circle text-2xl mb-2"></i>
+                <p class="font-bold">Thank you, ${name}!</p>
+                <p class="text-sm">We have received your message regarding "${subject}". We will get back to you at ${email} within 24 hours.</p>
+            `;
+            replyEl.classList.remove('hidden');
+
+            document.getElementById('contact-form').reset();
+            showToast('Message sent successfully!', 'success');
+        }
+
+        // ==========================================
+        // PROFILE PICTURE UPLOAD
+        // ==========================================
+        function handleProfilePicUpload(event, location) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            if (!file.type.startsWith('image/')) {
+                showToast('Please select an image file', 'error');
+                return;
+            }
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const imgId = location === 'gate' ? 'gate-profile-pic' : 'website-profile-pic';
+                document.getElementById(imgId).src = e.target.result;
+                showToast('Profile picture updated!', 'success');
+            };
+            reader.readAsDataURL(file);
+        }
+
+        // ==========================================
+        // INITIALIZATION
+        // ==========================================
+        document.addEventListener('DOMContentLoaded', function() {
+            // Start countdown
+            updateCountdown();
+            setInterval(updateCountdown, 1000);
+
+            // Start background rotation
+            setInterval(rotateBackground, 5000);
+
+            // Render agendas
+            renderAgendaCards();
+
+            // Render events
+            renderEvents();
+
+            // Active nav link highlighting
+            const sections = document.querySelectorAll('section[id]');
+            window.addEventListener('scroll', () => {
+                let current = '';
+                sections.forEach(section => {
+                    const sectionTop = section.offsetTop;
+                    if (scrollY >= sectionTop - 200) {
+                        current = section.getAttribute('id');
+                    }
+                });
+
+                document.querySelectorAll('.nav-link').forEach(link => {
+                    link.classList.remove('active');
+                    if (link.getAttribute('href') === '#' + current) {
+                        link.classList.add('active');
+                    }
+                });
+            });
+
+            // Keyboard shortcuts
+            document.addEventListener('keydown', (e) => {
+                if (e.key === 'Escape') {
+                    closeAgendaModal();
+                    closeVoterModal();
+                }
+            });
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,392 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Jajjemelo Pizza & Chicken Inn | Ruaka Luxury</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;700;800&display=swap" rel="stylesheet">
+
+    <style>
+        body { font-family: 'Plus Jakarta Sans', sans-serif; }
+
+        /* Animation: Vertical Floating */
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-15px); }
+        }
+        .floating-card { 
+            animation: float 4s ease-in-out infinite; 
+        }
+
+        /* Glassmorphism Effect */
+        .glassy {
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.2);
+        }
+
+        /* Deep Glass for Dark Sections */
+        .glassy-dark {
+            background: rgba(0, 0, 0, 0.4);
+            backdrop-filter: blur(15px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        /* Smooth Site Transitions */
+        .hero-slideshow {
+            transition: background-image 1.5s ease-in-out;
+            background-size: cover;
+            background-position: center;
+        }
+
+        /* Auth Gate Background - Hotel Image */
+        #auth-gate {
+            background: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)), 
+                        url('https://images.unsplash.com/photo-1566073771259-6a8506099945?q=80&w=2070');
+            background-size: cover;
+            background-position: center;
+            z-index: 9999;
+        }
+
+        /* Prevent scrolling when gate is active */
+        .locked { overflow: hidden; height: 100vh; }
+        html { scroll-behavior: smooth; }
+
+        /* Hide Scrollbar */
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-thumb { background: #dc2626; border-radius: 10px; }
+    </style>
+</head>
+<body class="bg-gray-900 text-white locked" id="site-body">
+
+    <!-- 1. AUTH GATE (HOTEL BACKGROUND) -->
+    <div id="auth-gate" class="fixed inset-0 flex items-center justify-center p-4">
+        <div class="glassy p-10 rounded-[40px] max-w-md w-full text-center border-2 border-white/30">
+            <h1 class="text-5xl font-extrabold text-white mb-2 tracking-tighter">JAJEMELO</h1>
+            <p class="text-red-400 font-bold uppercase tracking-widest text-xs mb-8">Hotel & Restaurant Group</p>
+            
+            <div class="space-y-4">
+                <input type="text" placeholder="Username/Email" class="w-full p-4 rounded-2xl bg-white/10 border border-white/20 text-white placeholder-white/60 outline-none focus:bg-white/20 transition">
+                <input type="password" placeholder="Password" class="w-full p-4 rounded-2xl bg-white/10 border border-white/20 text-white placeholder-white/60 outline-none focus:bg-white/20 transition">
+                <button onclick="unlock()" class="w-full bg-red-600 hover:bg-red-700 text-white font-black py-4 rounded-2xl shadow-xl active:scale-95 transition-all">LOGIN</button>
+                <button onclick="unlock()" class="w-full glassy text-white font-bold py-4 rounded-2xl hover:bg-white/10 active:scale-95 transition-all">CREATE ACCOUNT</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 2. NAVBAR -->
+    <nav class="fixed top-0 w-full z-[100] px-6 py-5 flex justify-between items-center bg-transparent transition-all duration-500" id="navbar">
+        <div class="text-2xl font-black tracking-tighter text-white">JAJEMELO</div>
+        
+        <ul class="hidden lg:flex space-x-8 font-bold uppercase text-[10px] tracking-[0.2em]">
+            <li><a href="#home" class="hover:text-red-500">Home</a></li>
+            <li><a href="#about" class="hover:text-red-500">About Us</a></li>
+            <li><a href="#menu" class="hover:text-red-500">Menu</a></li>
+            <li><a href="#services" class="hover:text-red-500">Services</a></li>
+            <li><a href="#contact" class="hover:text-red-500">Contact</a></li>
+        </ul>
+
+        <div class="flex items-center space-x-5">
+            <div class="relative cursor-pointer" onclick="toggleNotifs()">
+                <i class="fa-solid fa-bell text-xl"></i>
+                <span id="notif-dot" class="absolute -top-1 -right-1 bg-red-600 w-4 h-4 rounded-full text-[10px] flex items-center justify-center font-bold">0</span>
+                <!-- Notif Box -->
+                <div id="notif-box" class="hidden absolute right-0 mt-6 w-64 glassy-dark rounded-2xl p-4 text-xs border border-white/10">
+                    <p class="font-bold border-b border-white/10 pb-2 mb-2">Live Status</p>
+                    <div id="notif-list" class="text-gray-400">System connected...</div>
+                </div>
+            </div>
+            <button onclick="toggleCart()" class="relative glassy p-3 rounded-full hover:bg-red-600 transition">
+                <i class="fa-solid fa-cart-shopping"></i>
+                <span id="cart-count" class="absolute -top-2 -right-2 bg-white text-red-600 text-[10px] font-black w-5 h-5 flex items-center justify-center rounded-full">0</span>
+            </button>
+            <div id="clock" class="hidden md:block font-mono text-xs bg-white/10 px-3 py-1 rounded-full border border-white/10">00:00:00</div>
+        </div>
+    </nav>
+
+    <!-- 3. HERO SLIDESHOW -->
+    <section id="home" class="hero-slideshow h-screen flex items-center justify-center text-center px-6" 
+             style="background-image: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), url('https://images.unsplash.com/photo-1513104890138-7c749659a591?q=80&w=2070');">
+        <div class="max-w-4xl">
+            <h2 class="text-6xl md:text-8xl font-black mb-6 tracking-tighter">LUXURY IN EVERY BITE.</h2>
+            <p class="text-lg md:text-2xl mb-10 text-gray-200 font-light">Experience Ruaka's most prestigious Pizza and Chicken kitchen.</p>
+            <a href="#menu" class="bg-red-600 px-12 py-5 rounded-full font-black uppercase text-sm hover:scale-110 transition shadow-2xl">View Menu</a>
+        </div>
+    </section>
+
+    <!-- 4. SERVICES (FLOATING GLASSY CARDS) -->
+    <section id="services" class="py-32 px-6 bg-black relative overflow-hidden">
+        <div class="absolute top-0 left-0 w-full h-full opacity-20" style="background-image: url('https://www.transparenttextures.com/patterns/carbon-fibre.png');"></div>
+        <h2 class="text-4xl font-black text-center mb-20 relative uppercase tracking-widest">Our Premium Services</h2>
+        
+        <div class="grid md:grid-cols-3 gap-10 max-w-7xl mx-auto relative">
+            <div class="floating-card glassy p-10 rounded-[40px] text-center border border-white/20">
+                <div class="w-20 h-20 bg-red-600 rounded-3xl flex items-center justify-center mx-auto mb-8 shadow-lg shadow-red-600/40">
+                    <i class="fa-solid fa-bolt text-3xl"></i>
+                </div>
+                <h3 class="text-2xl font-bold mb-4">Swift Delivery</h3>
+                <p class="text-gray-400 mb-6">Ruaka & Environs priority delivery service.</p>
+                <p class="text-2xl font-black text-white">Ksh 150</p>
+                <button class="mt-6 text-red-500 font-bold text-sm">PAY VIA MPESA <i class="fa-solid fa-arrow-right ml-2"></i></button>
+            </div>
+            <div class="floating-card glassy p-10 rounded-[40px] text-center border border-white/20" style="animation-delay: 0.5s;">
+                <div class="w-20 h-20 bg-orange-600 rounded-3xl flex items-center justify-center mx-auto mb-8 shadow-lg shadow-orange-600/40">
+                    <i class="fa-solid fa-utensils text-3xl"></i>
+                </div>
+                <h3 class="text-2xl font-bold mb-4">VIP Dine-In</h3>
+                <p class="text-gray-400 mb-6">Experience world-class hospitality at Ruaka Square.</p>
+                <p class="text-2xl font-black text-white">Complimentary</p>
+                <button class="mt-6 text-orange-500 font-bold text-sm">RESERVE TABLE <i class="fa-solid fa-arrow-right ml-2"></i></button>
+            </div>
+            <div class="floating-card glassy p-10 rounded-[40px] text-center border border-white/20" style="animation-delay: 1s;">
+                <div class="w-20 h-20 bg-blue-600 rounded-3xl flex items-center justify-center mx-auto mb-8 shadow-lg shadow-blue-600/40">
+                    <i class="fa-solid fa-crown text-3xl"></i>
+                </div>
+                <h3 class="text-2xl font-bold mb-4">Event Catering</h3>
+                <p class="text-gray-400 mb-6">We bring the Jajemelo luxury to your private events.</p>
+                <p class="text-2xl font-black text-white">Custom Pricing</p>
+                <button class="mt-6 text-blue-500 font-bold text-sm">GET A QUOTE <i class="fa-solid fa-arrow-right ml-2"></i></button>
+            </div>
+        </div>
+    </section>
+
+    <!-- 5. MENU SECTION (FLOATING GLASSY CARDS) -->
+    <section id="menu" class="py-32 px-6 max-w-7xl mx-auto">
+        <h2 class="text-5xl font-black text-center mb-16 uppercase tracking-tighter">Signature Menu</h2>
+        <div id="menu-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+            <!-- Populated by JS -->
+        </div>
+    </section>
+
+    <!-- 6. DASHBOARD SECTION -->
+    <section class="py-32 px-6 bg-zinc-950">
+        <div class="max-w-7xl mx-auto grid lg:grid-cols-2 gap-10">
+            <div class="glassy p-10 rounded-[40px]">
+                <h3 class="text-2xl font-black mb-8 flex items-center gap-4">
+                    <i class="fa-solid fa-calendar-check text-red-600"></i> STAFF ATTENDANCE
+                </h3>
+                <iframe src="https://calendar.google.com/calendar/embed?height=300&wkst=1&bgcolor=%23ffffff&ctz=UTC&showTitle=0&showNav=1&showPrint=0&showTabs=0&showCalendars=0" class="w-full h-80 rounded-3xl invert grayscale opacity-80" frameborder="0"></iframe>
+            </div>
+            <div class="glassy p-10 rounded-[40px]">
+                <h3 class="text-2xl font-black mb-8 flex items-center gap-4">
+                    <i class="fa-solid fa-headset text-green-500"></i> LIVE ORDERS & FEEDBACK
+                </h3>
+                <div id="order-feed" class="space-y-4 font-mono text-xs text-gray-400 h-80 overflow-y-auto">
+                    <p class="text-green-500">>> Connection established to Chef Dashboard...</p>
+                    <p class="text-white">>> Order #991: Large Peri-Peri Pizza [In Progress]</p>
+                </div>
+                <div class="mt-6 flex gap-2">
+                    <input type="text" id="feedback-in" class="flex-grow bg-white/5 border border-white/10 rounded-xl p-4 outline-none" placeholder="Type feedback here...">
+                    <button onclick="sendFeedback()" class="bg-red-600 px-6 rounded-xl font-bold"><i class="fa-solid fa-paper-plane"></i></button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 7. CART DRAWER -->
+    <div id="cart-drawer" class="fixed top-0 right-0 h-full w-full md:w-[450px] glassy-dark translate-x-full transition-transform duration-500 z-[200] p-8 flex flex-col">
+        <div class="flex justify-between items-center mb-10">
+            <h2 class="text-3xl font-black">MY ORDER</h2>
+            <button onclick="toggleCart()" class="text-4xl font-light hover:rotate-90 transition">&times;</button>
+        </div>
+        <div id="cart-list" class="flex-grow overflow-y-auto space-y-6">
+            <p class="text-center text-gray-500 mt-20 italic">No items added to cart.</p>
+        </div>
+        <div class="mt-10 border-t border-white/10 pt-10">
+            <div class="flex justify-between text-2xl font-black mb-8">
+                <span>TOTAL</span>
+                <span class="text-red-600">Ksh <span id="total-val">0</span></span>
+            </div>
+            <button onclick="payMpesa()" class="w-full bg-[#49c51c] py-5 rounded-3xl font-black flex items-center justify-center gap-4 hover:opacity-80 transition active:scale-95">
+                <i class="fa-solid fa-mobile-screen text-2xl"></i> MPESA STK PUSH
+            </button>
+        </div>
+    </div>
+
+    <!-- 8. FOOTER -->
+    <footer id="contact" class="bg-black py-20 px-6 border-t border-white/5">
+        <div class="max-w-7xl mx-auto grid md:grid-cols-3 gap-12">
+            <div>
+                <h3 class="text-3xl font-black text-red-600 mb-6">JAJEMELO</h3>
+                <p class="text-gray-500">Ruaka Square Branch, Limuru Road, Nairobi.<br>Premium Dining & Fast Casual.</p>
+                <div class="flex space-x-6 mt-8 text-2xl">
+                    <a href="#" class="hover:text-red-600"><i class="fa-brands fa-instagram"></i></a>
+                    <a href="#" class="hover:text-red-600"><i class="fa-brands fa-facebook"></i></a>
+                    <a href="#" class="hover:text-red-600"><i class="fa-brands fa-whatsapp"></i></a>
+                </div>
+            </div>
+            <div>
+                <h3 class="text-xl font-bold mb-6 underline decoration-red-600 decoration-4">Reservations</h3>
+                <p class="text-gray-400">Phone: +254 700 123 456</p>
+                <p class="text-gray-400">Email: concierge@jajemelo.com</p>
+                <p class="text-gray-400 mt-4 font-bold">Ruaka, Nairobi - Kenya</p>
+            </div>
+            <div>
+                <h3 class="text-xl font-bold mb-6">Chef's Report</h3>
+                <p class="text-gray-400">Monday - Sunday: 10:00 - 23:00</p>
+                <p class="text-red-600 font-bold mt-2 italic underline text-sm">Report Time: 09:30 AM Daily</p>
+            </div>
+        </div>
+        <div class="text-center mt-20 text-[10px] uppercase tracking-widest text-gray-700">
+            Jajjemelo Pizza Inn & Chicken Inn restaurant concatinating &copy; 2024
+        </div>
+    </footer>
+
+    <script>
+        // --- DATA ---
+        const menuItems = [
+            { id: 1, name: "Luxury BBQ Pizza", price: 1200, img: "https://images.unsplash.com/photo-1513104890138-7c749659a591?w=400", desc: "Top-tier steak, hickory sauce, and prime mozzarella." },
+            { id: 2, name: "Peri-Peri Prime Pizza", price: 1150, img: "https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?w=400", desc: "Signature spicy chicken with charred bell peppers." },
+            { id: 3, name: "Golden Crisp 4pc", price: 850, img: "https://images.unsplash.com/photo-1626082927389-6cd097cdc6ec?w=400", desc: "Four pieces of our famous fried chicken with masala fries." },
+            { id: 4, name: "Hawaiian Royal", price: 1000, img: "https://images.unsplash.com/photo-1594007654729-407eedc4be65?w=400", desc: "Fresh pineapple and premium honey-glazed ham." },
+            { id: 5, name: "Wings of Fire", price: 750, img: "https://images.unsplash.com/photo-1567620832903-9fc6debc209f?w=400", desc: "8 juicy wings tossed in our secret volcano sauce." },
+            { id: 6, name: "Truffle Mushroom Pizza", price: 1400, img: "https://images.unsplash.com/photo-1571407970349-bc81e7e96d47?w=400", desc: "Wild mushrooms and white truffle oil for the elite." },
+            { id: 7, name: "Double Cheese Burger", price: 650, img: "https://images.unsplash.com/photo-1513185158878-8d8c196b7c7c?w=400", desc: "Flame-grilled beef patty with aged cheddar." },
+            { id: 8, name: "Party Feast Bucket", price: 2900, img: "https://images.unsplash.com/photo-1561758033-d89a9ad46330?w=400", desc: "8pc chicken, large fries, and 2L premium beverage." }
+        ];
+
+        let cart = [];
+
+        // --- AUTH ---
+        function unlock() {
+            document.getElementById('auth-gate').classList.add('hidden');
+            document.getElementById('site-body').classList.remove('locked');
+            init();
+        }
+
+        // --- CORE ---
+        function init() {
+            renderMenu();
+            startClock();
+            startSlides();
+            window.addEventListener('scroll', () => {
+                const nav = document.getElementById('navbar');
+                if(window.scrollY > 50) nav.classList.add('glassy-dark', 'py-3');
+                else nav.classList.remove('glassy-dark', 'py-3');
+            });
+        }
+
+        function renderMenu() {
+            const grid = document.getElementById('menu-grid');
+            grid.innerHTML = menuItems.map(item => `
+                <div class="floating-card glassy rounded-[40px] overflow-hidden group border border-white/10 hover:border-red-600/50 transition-all">
+                    <div class="h-48 overflow-hidden relative">
+                        <img src="${item.img}" class="w-full h-full object-cover group-hover:scale-110 transition duration-700">
+                    </div>
+                    <div class="p-8">
+                        <h4 class="text-xl font-bold mb-2">${item.name}</h4>
+                        <p class="text-gray-400 text-xs mb-6 line-clamp-2">${item.desc}</p>
+                        <div class="flex justify-between items-center">
+                            <span class="text-2xl font-black text-white">Ksh ${item.price}</span>
+                            <button onclick="addToCart(${item.id})" class="bg-red-600 w-12 h-12 rounded-2xl flex items-center justify-center hover:scale-110 transition active:scale-95">
+                                <i class="fa-solid fa-plus"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // --- CART ---
+        function toggleCart() { document.getElementById('cart-drawer').classList.toggle('translate-x-full'); }
+
+        function addToCart(id) {
+            const item = menuItems.find(i => i.id === id);
+            cart.push(item);
+            updateCart();
+            
+            // Notification
+            const count = document.getElementById('notif-dot');
+            count.innerText = parseInt(count.innerText) + 1;
+            document.getElementById('notif-list').innerHTML = `<p class="text-red-500 font-bold">New: ${item.name} added to cart.</p>`;
+        }
+
+        function updateCart() {
+            const list = document.getElementById('cart-list');
+            const totalVal = document.getElementById('total-val');
+            document.getElementById('cart-count').innerText = cart.length;
+
+            if(cart.length === 0) {
+                list.innerHTML = `<p class="text-center text-gray-500 mt-20 italic">No items added to cart.</p>`;
+                totalVal.innerText = "0";
+                return;
+            }
+
+            let total = 0;
+            list.innerHTML = cart.map((item, index) => {
+                total += item.price;
+                return `
+                    <div class="flex items-center gap-4 glassy p-4 rounded-3xl animate-pulse-once">
+                        <img src="${item.img}" class="w-16 h-16 rounded-xl object-cover">
+                        <div class="flex-grow">
+                            <h5 class="font-bold text-sm">${item.name}</h5>
+                            <p class="text-red-500 font-bold">Ksh ${item.price}</p>
+                        </div>
+                        <button onclick="removeFromCart(${index})" class="text-gray-500 hover:text-red-500"><i class="fa-solid fa-trash"></i></button>
+                    </div>
+                `;
+            }).join('');
+            totalVal.innerText = total.toLocaleString();
+        }
+
+        function removeFromCart(index) {
+            cart.splice(index, 1);
+            updateCart();
+        }
+
+        function payMpesa() {
+            if(cart.length === 0) return;
+            const phone = prompt("Enter M-Pesa Phone Number (254...):");
+            if(phone) {
+                alert("STK Push Request Sent. Please check your phone to confirm.");
+                setTimeout(() => {
+                    alert("Payment Confirmed. Our Chef is preparing your luxury meal!");
+                    cart = [];
+                    updateCart();
+                    toggleCart();
+                }, 3000);
+            }
+        }
+
+        // --- UTILS ---
+        function startClock() {
+            setInterval(() => {
+                document.getElementById('clock').innerText = new Date().toLocaleTimeString();
+            }, 1000);
+        }
+
+        function startSlides() {
+            const imgs = [
+                'https://images.unsplash.com/photo-1513104890138-7c749659a591?q=80&w=2070',
+                'https://images.unsplash.com/photo-1514362545857-3bc16c4c7d1b?q=80&w=2070',
+                'https://images.unsplash.com/photo-1590846406792-0adc7f938f1d?q=80&w=2070'
+            ];
+            let i = 0;
+            setInterval(() => {
+                i = (i + 1) % imgs.length;
+                document.getElementById('home').style.backgroundImage = `linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), url('${imgs[i]}')`;
+            }, 10000);
+        }
+
+        function toggleNotifs() { document.getElementById('notif-box').classList.toggle('hidden'); }
+
+        function sendFeedback() {
+            const val = document.getElementById('feedback-in').value;
+            if(!val) return;
+            const feed = document.getElementById('order-feed');
+            feed.innerHTML += `<p class="text-blue-400">>> You: ${val}</p>`;
+            setTimeout(() => {
+                feed.innerHTML += `<p class="text-red-400">>> Admin: Thank you! We have notified the Chef.</p>`;
+            }, 1000);
+            document.getElementById('feedback-in').value = "";
+        }
+    </script>
+</body>
+</html>
